@@ -2887,9 +2887,9 @@ Call_001_51d9:
     ld hl, $c5ca
 
 Jump_001_51dc:
-    push hl
-    push hl
-    ld de, $d000
+    call GBC_QueueEntryHook     ; was: push hl / push hl / ld de,$d000 (iso-size)
+    nop
+    nop
     ld a, [hl+]
     ld l, [hl]
     ld h, a
@@ -10930,6 +10930,106 @@ GBC_RoundEndPieceErase::
     pop de
     pop bc
     pop af
+    ret
+
+
+; ============================================================================
+; GBC_QueueEntryHook: patched over the first 5 bytes of the text-queue entry
+; loop at Jump_001_51dc ("push hl / push hl / ld de,$d000"). HL = queue entry
+; (offset hi, offset lo, width, height). A full-screen 20x18 draw with the
+; LCD on is diverted to the one-VBlank GDMA flip instead of the per-tile
+; HBlank-chasing copy (the visible top-to-bottom sweep). Small text/cursor
+; draws and LCD-off init draws keep the original path.
+; ============================================================================
+GBC_QueueEntryHook:
+    ldh a, [rLCDC]
+    add a                       ; LCD enable (bit 7) -> carry
+    jr nc, .passthrough
+    push hl
+    ld a, [hl+]
+    or [hl]                     ; tilemap offset must be $0000
+    inc hl
+    jr nz, .notfull
+    ld a, [hl+]
+    cp $14                      ; width 20
+    jr nz, .notfull
+    ld a, [hl]
+    cp $12                      ; height 18
+    jr nz, .notfull
+    pop hl
+    pop de                      ; drop the return into the copy loop
+    push hl
+    call GBC_PrepareGDMAFlip
+    pop hl
+    ld de, $0004                ; queue bookkeeping, mirrors the loop tail
+    add hl, de
+    ld a, [$c5da]
+    dec a
+    ld [$c5da], a
+    jp nz, Jump_001_51dc
+    ld a, [$c5c8]
+    and $fb
+    ld [$c5c8], a
+    ret
+.notfull:
+    pop hl
+.passthrough:
+    pop de                      ; return address into the copy loop
+    push hl                     ; the two replaced "push hl"
+    push hl
+    push de
+    ld de, $d000                ; the replaced "ld de,$d000"
+    ret
+
+
+; ============================================================================
+; GBC_PrepareGDMAFlip: builds the BG attribute mirror for the 18 visible
+; tilemap rows in WRAM bank 2 (same $d000 layout as the tilemap shadow, tile
+; ids translated through wBGAttrLUT), then arms wGDMARequest so the next
+; VBlank flips the whole screen (tiles + attributes) in one shot.
+; Interrupts are masked while SVBK=2: the VBlank ISR must always see bank 1.
+; ============================================================================
+GBC_PrepareGDMAFlip:
+    ld hl, $d000
+    ld a, 18
+    ld [wGDMARowCnt], a
+.row:
+    ld de, wAttrRowTemp         ; snapshot one row of tile ids (bank 1)
+.copy:
+    ld a, [hl+]
+    ld [de], a
+    inc e
+    ld a, e
+    cp LOW(wAttrRowTemp) + 32
+    jr nz, .copy
+    push hl
+    ld de, $ffe0
+    add hl, de                  ; back to the row start (bank 2 target)
+    ld de, wAttrRowTemp
+    ld b, HIGH(wBGAttrLUT)
+    di
+    ld a, $02
+    ldh [rSVBK], a
+.xlat:
+    ld a, [de]
+    ld c, a
+    ld a, [bc]                  ; tile id -> attribute
+    ld [hl+], a
+    inc e
+    ld a, e
+    cp LOW(wAttrRowTemp) + 32
+    jr nz, .xlat
+    ld a, $01
+    ldh [rSVBK], a
+    ei
+    pop hl
+    ld a, [wGDMARowCnt]
+    dec a
+    ld [wGDMARowCnt], a
+    jr nz, .row
+    ld a, [wGDMARequest]
+    or $01
+    ld [wGDMARequest], a
     ret
 
     ds $8000 - @, 0

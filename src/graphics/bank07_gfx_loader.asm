@@ -4024,7 +4024,7 @@ jr_007_5108:
     db $fc
     rst $38
     rst $38
-    jp Jump_000_3eff
+    jp $3eff                    ; data bytes (was Jump_000_3eff; ROM0 island reused)
 
 
     db $fd
@@ -5964,7 +5964,7 @@ jr_007_5a66:
     ld a, a
     pop bc
     ld a, [hl]
-    jp Jump_000_3f00
+    jp $3f00                    ; data bytes (was Jump_000_3f00; ROM0 island reused)
 
 
     nop

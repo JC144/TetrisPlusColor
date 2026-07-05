@@ -4593,64 +4593,61 @@ Call_000_1904:
     jp QueueTextDraw
 
 
+; ============================================================================
+; Call_000_1919: rewritten in place (GBC). Originally streamed the mode-select
+; vignette CHR ($c66e -> $c670, 7 frames x $c0 bytes) with the LCD on -- the
+; visible top-to-bottom fill. Now stages the whole $540 bytes from ROM bank
+; $0e into WRAM bank 2 (wChrStaging) in one call and arms bit 1 of
+; wGDMARequest; the next VBlank uploads it to $9000 in a single GDMA.
+; SVBK is only ever != 1 inside di/ei windows (the VBlank ISR must always see
+; bank 1). Padded to keep Call_000_1971 in place; Call_000_1944 kept as an
+; address-only label (referenced as data bytes from bank0d).
+; ============================================================================
 Call_000_1919:
     ld a, [$c66d]
     or a
     ret z
 
-    ld a, $0e
+    ld a, $0e                   ; map CHR data bank (as the original did)
     rst $10
     ld hl, $c66e
     ld a, [hl+]
     ld l, [hl]
-    ld h, a
-    ld de, $c670
-    ld a, [de]
+    ld h, a                     ; HL = ROM source
+    ld de, wChrStaging
+    ld c, $2a                   ; 42 chunks of 32 bytes = $540
+.chunk:
+    di
+    ld a, $02
+    ldh [rSVBK], a
+    ld b, $20
+.byte:
+    ld a, [hl+]
+    ld [de], a
     inc de
-    ld b, a
-    ld a, [de]
-    ld d, b
-    ld e, a
-    ld bc, $00c0
-    call Call_000_1a50
+    dec b
+    jr nz, .byte
+
+    ld a, $01
+    ldh [rSVBK], a
+    ei
+    dec c
+    jr nz, .chunk
+
     ld a, $01
     rst $18
-    ld a, [$c672]
-    inc a
-    cp $07
-    jr z, jr_000_1969
 
-    ld [$c672], a
-
+    ds $1944 - @, 0
 Call_000_1944:
-    ld hl, $c66e
-    ld a, [hl+]
-    ld l, [hl]
-    ld h, a
-    ld bc, $00c0
-    add hl, bc
-    ld a, h
-    ld [$c66e], a
-    ld a, l
-    ld [$c66f], a
-    ld hl, $c670
-    ld a, [hl+]
-    ld l, [hl]
-    ld h, a
-    ld bc, $00c0
-    add hl, bc
-    ld a, h
-    ld [$c670], a
-    ld a, l
-    ld [$c671], a
-    ret
-
-
-jr_000_1969:
     xor a
     ld [$c66d], a
     ld [$c672], a
+    ld a, [wGDMARequest]
+    or $02
+    ld [wGDMARequest], a
     ret
+
+    ds $1971 - @, 0
 
 
 Call_000_1971:
@@ -11483,72 +11480,45 @@ jr_000_3ede:
     ret
 
 
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+; ============================================================================
+; GBC_GDMADispatch: serves one wGDMARequest bit per VBlank (called from the
+; trampoline head with A = request bits, nonzero). Bit 0 (full tilemap+attr
+; flip) has priority; bit 1 (vignette CHR from wChrStaging to $9000) runs the
+; following VBlank if both are armed. rVBK is forced to 0 for the CHR upload:
+; the interrupt may have landed inside WriteTileWithPalette's VBK=1 window.
+; (Occupies the former nop island $3ee8-$3f23; the old Call_000_3efc /
+; Jump_000_3eff / Jump_000_3f00 labels here were only referenced as data
+; bytes from banks 07/0a, now literals at those sites.)
+; ============================================================================
+GBC_GDMADispatch:
+    rra                         ; bit 0 -> carry
+    jr nc, .chr
+    ld a, [wGDMARequest]
+    and $02                     ; keep a pending CHR upload for next VBlank
+    ld [wGDMARequest], a
+    jp GBC_DoGDMAFlip
+.chr:
+    xor a
+    ld [wGDMARequest], a
+    ld a, $02
+    ldh [rSVBK], a              ; source lives in WRAM bank 2
+    xor a
+    ldh [rVBK], a
+    ld a, HIGH(wChrStaging)
+    ldh [rHDMA1], a
+    xor a
+    ldh [rHDMA2], a
+    ld a, $90
+    ldh [rHDMA3], a             ; dest $9000 (vignette tile data)
+    xor a
+    ldh [rHDMA4], a
+    ld a, $53
+    ldh [rHDMA5], a             ; GDMA, 84 blocks = $540 bytes
+    ld a, $01
+    ldh [rSVBK], a
+    ret
 
-Call_000_3efc:
-    nop
-    nop
-    nop
-
-Jump_000_3eff:
-    nop
-
-Jump_000_3f00:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds $3f24 - @, 0
 
 Call_000_3f24:
 ; ============================================================================
@@ -11561,6 +11531,12 @@ VBlankTrampoline_Bank0:
     push af
     push bc
     push hl
+    ld a, [wGDMARequest]
+    or a
+    jr z, .pal
+    call GBC_GDMADispatch
+    jr .check                   ; palette upload deferred (wPalDirty kept set)
+.pal:
     ld a, [wPalDirty]
     or a
     jr z, .check
@@ -11694,6 +11670,36 @@ GBC_ChrPatchRet:
     pop de
     pop bc
     pop af
+    ret
+
+; ============================================================================
+; GBC_DoGDMAFlip: full-screen tilemap flip, two general-purpose DMAs during
+; VBlank. Attributes first (WRAM bank 2 mirror -> VRAM bank 1), then tile ids
+; (tilemap shadow $d000 -> VRAM bank 0). 2 x 36 blocks ~ 576 M-cycles: fits
+; in the VBlank window because the palette upload is deferred that frame.
+; Ends with SVBK=1 / VBK=0 restored (set before the second transfer).
+; ============================================================================
+GBC_DoGDMAFlip:
+    ld a, $02
+    ldh [rSVBK], a
+    ld a, $01
+    ldh [rVBK], a
+    call .transfer
+    ld a, $01
+    ldh [rSVBK], a
+    xor a
+    ldh [rVBK], a
+.transfer:
+    ld a, $d0
+    ldh [rHDMA1], a             ; source $d000
+    xor a
+    ldh [rHDMA2], a
+    ld a, $98
+    ldh [rHDMA3], a             ; dest $9800 (upper bits masked by hardware)
+    xor a
+    ldh [rHDMA4], a
+    ld a, $23
+    ldh [rHDMA5], a             ; GDMA, 36 blocks = 576 bytes = 18 rows
     ret
 
     ds $4000 - @, 0

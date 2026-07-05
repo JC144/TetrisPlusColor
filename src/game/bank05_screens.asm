@@ -3762,7 +3762,7 @@ jr_005_564a:
     ld l, $e6
     ld b, $08
     ld c, $01
-    call Call_000_0153
+    call GBC_NavQueueAndPump    ; was: call Call_000_0153 (iso-size)
     ret
 
 
@@ -12933,15 +12933,17 @@ jr_005_6924:
     nop
     nop
     nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+
+
+; ============================================================================
+; GBC_NavQueueAndPump: called in place of Call_005_564a's final
+; "call Call_000_0153" (iso-size 3-byte patch). Queues the 8x1 mode-label row
+; as the original did, then pumps the CHR stream immediately: Call_000_1919
+; (rewritten) stages the whole vignette in one call and arms the VBlank GDMA,
+; so the label text and the vignette bitmaps swap on the same frame.
+; ============================================================================
+GBC_NavQueueAndPump:
+    call Call_000_0153
+    jp Call_000_017a
+
+    ds $8000 - @, 0

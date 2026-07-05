@@ -75,6 +75,18 @@ DEF wSnapReq             EQU $cd8a  ; 1 = next palette recompute is instant (no 
 DEF wFadePhase           EQU $cd8b  ; 0-3: which palette quarter steps this frame
 DEF wFadeMoved           EQU $cd8c  ; 1 = something moved in current stepping cycle
 DEF wFadeScratch         EQU $cd8d  ; 3 bytes: StepPalettes target color + moved flag
+DEF wGDMARequest         EQU $cd90  ; VBlank GDMA request bits: bit0 = tilemap+attrs
+                                    ; full-screen flip, bit1 = vignette CHR upload
+                                    ; (one request served per VBlank, bit0 first)
+DEF wGDMARowCnt          EQU $cd91  ; row counter for GBC_PrepareGDMAFlip
+DEF wAttrRowTemp         EQU $cda0  ; 32 bytes ($cda0-$cdbf): one tilemap row, ids then attrs
+; WRAM bank 2 (SVBK=2) staging. The original DMG game never touches rSVBK,
+; so banks 2-7 are entirely free.
+;   $d000-$d23f  full-screen attribute mirror (same layout as the $d000
+;                tilemap shadow in bank 1)
+;   $d300-$d83f  CHR staging for the mode-select vignette ($540 bytes,
+;                GDMA'd to $9000 by GBC_GDMADispatch)
+DEF wChrStaging          EQU $d300
 DEF wBGAttrLUT           EQU $ce00  ; 256 bytes page-aligned: tile-ID -> BG attribute
 DEF wOBJPalLUT           EQU $cf00  ; 256 bytes page-aligned: tile-ID -> OBJ palette (0-3)
 

@@ -2377,7 +2377,7 @@ jr_00a_49fa:
     db $fc
     jr c, jr_00a_49fa
 
-    call c, Call_000_3efc
+    call c, $3efc               ; data bytes (was Call_000_3efc; ROM0 island reused)
     cp $fe
     or $fd
     rst $38
