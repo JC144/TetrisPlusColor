@@ -1,6 +1,6 @@
 # Tetris Plus - GBC Homebrew
 ## Last release
-[]()
+[v1.0](https://github.com/JC144/TetrisPlusColor/releases/tag/Release)
 
 ## Why?
 I loved this game on PSX. I recently bought a Game Boy Color and discovered a Game Boy version of it... but in grey.
