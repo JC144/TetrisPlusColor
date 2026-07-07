@@ -4664,6 +4664,20 @@ GBC_WhiteoutBG::
     jr nz, .color
     ret
 
+; RenderTilemapCell's single exit stub ($1c52) is rerouted here. Runs right
+; after a map finished decompressing into the $d000 shadow: applies the
+; studio's per-cell tile-id remaps (bank10 MapRemapTable, keyed by wCurMapId
+; which GBC_MapHook refreshed on entry), then performs the original exit
+; (restore bank 1, return to the caller). Bank10_ApplyMapRemaps saves the
+; registers itself; A is clobbered exactly like the original exit did.
+GBC_MapRemapRet:
+    ld a, $10
+    rst $10
+    call Bank10_ApplyMapRemaps
+    ld a, $01                   ; original replaced bytes
+    rst $18
+    ret
+
     ds $1971 - @, 0
 
 
@@ -5318,9 +5332,8 @@ jr_000_1c4a:
     jr jr_000_1c25
 
 Jump_000_1c52:
-    ld a, $01
-    rst $18
-    ret
+    jp GBC_MapRemapRet          ; was: ld a,$01 / rst $18 / ret (4 bytes; the
+    db $00                      ; hook applies map remaps then redoes them)
 
 
 DispatchBankRoutine:

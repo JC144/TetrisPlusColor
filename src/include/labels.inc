@@ -79,6 +79,8 @@ DEF wGDMARequest         EQU $cd90  ; VBlank GDMA request bits: bit0 = tilemap+a
                                     ; full-screen flip, bit1 = vignette CHR upload
                                     ; (one request served per VBlank, bit0 first)
 DEF wGDMARowCnt          EQU $cd91  ; row counter for GBC_PrepareGDMAFlip
+DEF wCurMapId            EQU $cd92  ; RLE map id of the last RenderTilemapCell call
+                                    ; (set by Bank10_OnMapLoad, read by map remaps)
 DEF wAttrRowTemp         EQU $cda0  ; 32 bytes ($cda0-$cdbf): one tilemap row, ids then attrs
 ; WRAM bank 2 (SVBK=2) staging. The original DMG game never touches rSVBK,
 ; so banks 2-7 are entirely free.

@@ -100,5 +100,5 @@ class Handler(SimpleHTTPRequestHandler):
 
 if __name__ == "__main__":
     os.chdir(KIT)
-    print(f"Studio de colorisation : http://localhost:{PORT}  (Ctrl+C pour arrêter)")
+    print(f"Colorization studio: http://localhost:{PORT}  (Ctrl+C to stop)")
     HTTPServer(("127.0.0.1", PORT), Handler).serve_forever()

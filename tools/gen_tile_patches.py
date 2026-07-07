@@ -6,6 +6,11 @@ tile_edits.json schema (written by the studio UI):
     "<chr_entry_id>": {            // dispatch entry 0-22, as decimal string
       "<tile_index>": [64 ints]    // 0-3 gray levels, row-major 8x8,
     }                              // index relative to the entry's VRAM dest
+  },
+  "remaps": {                      // per-cell tile-id remaps (screen view
+    "<map_id>": {                  // "Replace with..."), RLE map id as
+      "<row>,<col>": tile_id      // decimal string; row 0-17, col 0-19
+    }
   }
 }
 
@@ -13,6 +18,9 @@ Emits ChrPatchTable (23 pointers) + per-entry patch lists:
   db count, then count * [dest_lo, dest_hi, 16 bytes 2bpp].
 VRAM dest = CHR_TABLE[entry].dest + tile_index*16 (cross-checked against
 tools/kit/data.json sizes when that file exists).
+Also emits MapRemapTable, applied to the $d000 tilemap shadow right after a
+map is decompressed: db map_id, count, count * [row, col, tile_id], ...,
+terminated by db $FF.
 """
 
 import json
@@ -131,9 +139,33 @@ def main():
     lines.extend(bodies)
     lines.append("")
 
+    remap_count = 0
+    lines.append("MapRemapTable:")
+    for map_id_s in sorted(edits.get("remaps", {}), key=int):
+        cells = edits["remaps"][map_id_s]
+        if not cells:
+            continue
+        map_id = int(map_id_s)
+        assert 0 <= map_id <= 0xFE, f"remap map id {map_id} out of range"
+        assert len(cells) <= 255, f"remap map {map_id}: too many cells"
+        lines.append(f"    db ${map_id:02X}, {len(cells)}  "
+                     f"; map ${map_id:02X}: {len(cells)} cell(s)")
+        for cell_s in sorted(cells, key=lambda s: [int(v) for v in s.split(",")]):
+            row, col = (int(v) for v in cell_s.split(","))
+            tile = int(cells[cell_s])
+            assert 0 <= row < 18 and 0 <= col < 20, \
+                f"remap map {map_id} cell {cell_s}: outside 20x18 screen"
+            assert 0 <= tile <= 0xFF, \
+                f"remap map {map_id} cell {cell_s}: bad tile id {tile}"
+            lines.append(f"    db {row}, {col}, ${tile:02X}")
+            remap_count += 1
+        lines.append("")
+    lines.append("    db $FF  ; end of MapRemapTable")
+    lines.append("")
+
     with open(OUT_PATH, "w", newline="\n") as f:
         f.write("\n".join(lines))
-    print(f"wrote {OUT_PATH}: {total} tile patches")
+    print(f"wrote {OUT_PATH}: {total} tile patches, {remap_count} cell remaps")
 
 
 if __name__ == "__main__":
