@@ -10,8 +10,8 @@
 ; Key functions:
 ;   QueueTextDraw ($541a)          - Queue text for rendering (29 calls)
 ;   ClearObjectSubfield ($61a7)   - Zero single byte at DE+$14 (42 calls)
-;   InitializeMusic ($681e)       - Set music track (24 calls)
-;   UpdateSoundSequencer ($682a)  - Advance sound playback (24 calls)
+;   InitPaletteFade ($681e)       - Arm DMG palette fade sequencer (24 calls)
+;   StepPaletteFade ($682a)       - Step DMG palette fade, ret 1 done (24 calls)
 ;   WriteTileWithPalette           - GBC tile rendering with color
 ;   LoadPalettesForScreen          - Auto-detect screen and load palettes
 ;
@@ -6989,7 +6989,9 @@ Call_001_67f8:
     ret
 
 
-InitializeMusic:
+; Arm the DMG palette fade sequencer: A = frames between fade steps ($c66b),
+; and reset the countdown ($c66a) and step index ($c66c).
+InitPaletteFade:
     ld [$c66b], a
     ld a, $00
     ld [$c66a], a
@@ -6997,7 +6999,11 @@ InitializeMusic:
     ret
 
 
-UpdateSoundSequencer:
+; Step the DMG palette fade armed by InitPaletteFade. A = fade command (index
+; into the table at $6880; e.g. $00 fade-in, $01 fade-out). Every $c66b frames
+; writes the next of 4 steps to the BGP/OBP0/OBP1 shadows ($c5f0-$c5f2).
+; Returns A=0 while fading, A=1 once all 4 steps are done ($c66c == 4).
+StepPaletteFade:
     ld [$c659], a
     ld a, [$c66a]
     or a

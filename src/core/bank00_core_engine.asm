@@ -943,7 +943,7 @@ Jump_000_038d:
     ld a, $01
     rst $10
     pop af
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $05
     rst $18
     ret
@@ -963,7 +963,7 @@ Jump_000_03a3:
     ld a, $01
     rst $10
     pop af
-    call UpdateSoundSequencer
+    call StepPaletteFade
     push af
     ld a, $05
     rst $18
@@ -1570,12 +1570,12 @@ jr_000_062f:
     ld a, $04
     ldh [$ffa0], a
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     jp AdvanceScreenState
 
 
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -1624,14 +1624,14 @@ jr_000_069f:
     ld a, $04
     ldh [$ffa1], a
     ld a, $04
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $02
     ld [SOUND_CONTROL], a
     jp AdvanceScreenState
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -1645,7 +1645,7 @@ jr_000_069f:
     ld c, $11
     call QueueTextDraw
     ld a, $04
-    call InitializeMusic
+    call InitPaletteFade
     jp AdvanceScreenState
 
 
@@ -1666,7 +1666,7 @@ Call_000_06de:
 
 
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -1870,12 +1870,12 @@ jr_000_0852:
     ld a, $02
     ld [SOUND_CONTROL], a
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     jp AdvanceScreenState
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2052,7 +2052,7 @@ jr_000_08f5:
     jr nz, jr_000_0969
 
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
 
 jr_000_0969:
     ld a, [$c6db]
@@ -2220,7 +2220,7 @@ jr_000_0a41:
     jr nz, jr_000_0a5e
 
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2495,12 +2495,12 @@ jr_000_0c14:
     xor a
     ld [ANIM_FRAME], a
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     jp AdvanceScreenState
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2527,7 +2527,7 @@ jr_000_0c30:
     ld a, $01
     rst $18
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $05
 
 Call_000_0c57:
@@ -2543,7 +2543,7 @@ Call_000_0c57:
     jp z, AdvanceScreenState
 
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2552,7 +2552,7 @@ Call_000_0c57:
     ret z
 
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $02
     ld [SOUND_CONTROL], a
     jp AdvanceScreenState
@@ -2563,7 +2563,7 @@ Call_000_0c57:
     jp z, Jump_000_0c91
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2594,14 +2594,14 @@ jr_000_0caa:
 
 
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $02
     ld [SOUND_CONTROL], a
     jp AdvanceScreenState
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2707,7 +2707,7 @@ jr_000_0d4d:
     ld a, $17
     ldh [$ffa0], a
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     xor a
     ld [$c5ed], a
     jp AdvanceScreenState
@@ -2731,7 +2731,7 @@ jr_000_0d82:
     ld a, $18
     ldh [$ffa0], a
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     xor a
     ld [$c5ed], a
     ld a, $16
@@ -2740,7 +2740,7 @@ jr_000_0d82:
 
 
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2761,14 +2761,14 @@ jr_000_0d82:
 
 jr_000_0dc4:
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $02
     ld [SOUND_CONTROL], a
     jp AdvanceScreenState
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2800,7 +2800,7 @@ jr_000_0dc4:
     ld b, b
     add b
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2816,24 +2816,24 @@ jr_000_0dc4:
     ret nz
 
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     jp AdvanceScreenState
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
     ld e, $36
     call Call_000_1904
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     jp AdvanceScreenState
 
 
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2849,14 +2849,14 @@ jr_000_0dc4:
     ret nz
 
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $02
     ld [SOUND_CONTROL], a
     jp AdvanceScreenState
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2900,12 +2900,12 @@ jr_000_0e7f:
     ld a, $01
     rst $18
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     jp AdvanceScreenState
 
 
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -2914,7 +2914,7 @@ jr_000_0e7f:
     ret z
 
     ld a, $08
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $02
     ld [SOUND_CONTROL], a
 
@@ -2923,7 +2923,7 @@ Call_000_0ed3:
 
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -3224,7 +3224,7 @@ jr_000_1017:
     ld c, $12
     call QueueTextDraw
     ld a, $03
-    call InitializeMusic
+    call InitPaletteFade
     xor a
     ld [$c7d3], a
     ld a, $01
@@ -3256,7 +3256,7 @@ jr_000_1017:
     ld a, $01
     ld [RENDER_REQUEST], a
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -3267,7 +3267,7 @@ jr_000_1017:
     ld a, $04
     ldh [$ffa1], a
     ld a, $03
-    call InitializeMusic
+    call InitPaletteFade
     xor a
     ld [ANIM_FRAME], a
     jp AdvanceScreenState
@@ -3318,7 +3318,7 @@ Jump_000_10f4:
     ld a, $01
     ld [RENDER_REQUEST], a
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
 
 Jump_000_110b:
     or a
@@ -3385,7 +3385,7 @@ jr_000_112c:
 
 jr_000_117a:
     ld a, $03
-    call InitializeMusic
+    call InitPaletteFade
     call $7253
     call ClearSpriteBuffer
     call Call_001_7343
@@ -3499,7 +3499,7 @@ jr_000_1230:
     ld a, $01
     ld [RENDER_REQUEST], a
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     jp z, Jump_000_12b1
 
@@ -3607,7 +3607,7 @@ jr_000_12df:
 
 jr_000_12e5:
     ld a, $03
-    call InitializeMusic
+    call InitPaletteFade
     ld a, $00
     ld [ANIM_FRAME], a
     ld a, $02
@@ -3620,7 +3620,7 @@ jr_000_12e5:
     ret nz
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -3640,7 +3640,7 @@ jr_000_12e5:
 jr_000_1320:
     call ClearSpriteBuffer
     ld a, $03
-    call InitializeMusic
+    call InitPaletteFade
     call AdvanceScreenState
     ld b, $01
     ld c, $00
@@ -3700,7 +3700,7 @@ jr_000_1383:
 
 jr_000_1389:
     ld a, $00
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -4189,7 +4189,7 @@ jr_000_16ad:
     ld [ANIM_FRAME], a
     ld [$c5a5], a
     ld a, $03
-    call InitializeMusic
+    call InitPaletteFade
     call AdvanceScreenState
     jp AdvanceScreenState
 
@@ -4238,7 +4238,7 @@ jr_000_16ea:
     ret nz
 
     ld a, $01
-    call UpdateSoundSequencer
+    call StepPaletteFade
     or a
     ret z
 
@@ -4645,6 +4645,23 @@ Call_000_1944:
     ld a, [wGDMARequest]
     or $02
     ld [wGDMARequest], a
+    ret
+
+; Fills all 8 BG palettes with pure white, straight to CRAM. Called from the
+; VBlank trampoline the moment the DMG fade hits BGP=$00, one VBlank before
+; the bank10 resnap lands -- the game starts drawing the next screen on that
+; exact frame. (Lives in the padding left by the Call_000_1919 rewrite.)
+GBC_WhiteoutBG::
+    ld a, $80
+    ldh [rBCPS], a
+    ld b, 32
+.color:
+    ld a, $ff
+    ldh [rBCPD], a
+    ld a, $7f
+    ldh [rBCPD], a
+    dec b
+    jr nz, .color
     ret
 
     ds $1971 - @, 0
@@ -11522,24 +11539,46 @@ GBC_GDMADispatch:
 
 Call_000_3f24:
 ; ============================================================================
-; GBC VBlank trampoline: upload staged palettes to CRAM when dirty, detect
-; DMG palette shadow changes (the game's fade engine), then continue into the
-; original VBlank handler.
+; GBC VBlank trampoline. Order matters: detect DMG shadow changes FIRST --
+; when the game's fade hits an endpoint ($00/$ff) the staging is stale, so
+; any pending GDMA is held until bank10 has resnapped (pure white/black) and
+; the upload has landed; full-screen flips then happen behind a blank screen.
+; One transfer per VBlank: palettes when dirty (priority), else GDMA.
 ; (Call_000_3f24 label kept: referenced as data bytes from bank0e.)
 ; ============================================================================
 VBlankTrampoline_Bank0:
     push af
     push bc
     push hl
-    ld a, [wGDMARequest]
-    or a
-    jr z, .pal
-    call GBC_GDMADispatch
-    jr .check                   ; palette upload deferred (wPalDirty kept set)
-.pal:
+    ld hl, wLastBGP
+    ld a, [BGP_SHADOW]
+    cp [hl]
+    jr nz, .changed
+    inc hl
+    ld a, [OBP0_SHADOW]
+    cp [hl]
+    jr nz, .changed
+    inc hl
+    ld a, [OBP1_SHADOW]
+    cp [hl]
+    jr z, .serve
+.changed:
+    ld a, $01
+    ld [wFadeReq], a
+    ld a, [BGP_SHADOW]
+    or a                        ; fade just hit the white endpoint?
+    call z, GBC_WhiteoutBG      ; blank BG CRAM this very VBlank
+    jr .done                    ; staging stale: no other uploads this VBlank
+.serve:
     ld a, [wPalDirty]
     or a
-    jr z, .check
+    jr nz, .pal
+    ld a, [wGDMARequest]
+    or a
+    jr z, .done
+    call GBC_GDMADispatch
+    jr .done
+.pal:
     xor a
     ld [wPalDirty], a
     ld a, $80
@@ -11559,22 +11598,6 @@ VBlankTrampoline_Bank0:
     ldh [rOCPD], a
     dec b
     jr nz, .obj
-.check:
-    ld hl, wLastBGP
-    ld a, [BGP_SHADOW]
-    cp [hl]
-    jr nz, .changed
-    inc hl
-    ld a, [OBP0_SHADOW]
-    cp [hl]
-    jr nz, .changed
-    inc hl
-    ld a, [OBP1_SHADOW]
-    cp [hl]
-    jr z, .done
-.changed:
-    ld a, $01
-    ld [wFadeReq], a
 .done:
     pop hl
     pop bc

@@ -140,7 +140,7 @@ jr_005_409e:
     ld h, $00
     ld l, $00
     ld b, $14
-    ld c, $1c
+    ld c, $1f                   ; was $1c: cover the credit row 30 (rows 0-30)
     call Call_000_0153
     ld a, $83
     ldh [rLCDC], a
@@ -570,9 +570,11 @@ jr_005_4304:
     ld [hl+], a
     ld [hl+], a
     ld [hl], a
-    xor a
-    ld [$c685], a
-    call Call_005_5d14
+    call GBC_PuzzleMenuInit     ; was: xor a / ld [$c685],a / call Call_005_5d14 (iso-size)
+    nop
+    nop
+    nop
+    nop
     jp Jump_000_0165
 
 
@@ -850,11 +852,16 @@ jr_005_44b9:
 Jump_005_450f:
     ld a, $08
     call Call_000_0162
-    xor a
-    ld [$c685], a
-    call Call_005_5d14
-    ld e, $24
-    call Call_000_015c
+    call GBC_PuzzleMenuReload   ; was: xor a / ld [$c685],a / call Call_005_5d14
+    nop                         ;      / ld e,$24 / call Call_000_015c (iso-size)
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
     ld a, $01
     ld [SCREEN_SUBSTATE], a
     ret
@@ -4842,12 +4849,12 @@ Call_005_5d05:
 
 
 Call_005_5d14:
-    ld c, $0a
+    ld c, $0c                   ; was $0a: NEW GAME now on the bottom row
     ld a, [$c685]
     cp $00
     jr z, jr_005_5d1f
 
-    ld c, $0c
+    ld c, $0a                   ; was $0c: CONTINUE now on the top row
 
 jr_005_5d1f:
     ld b, $05
@@ -4861,12 +4868,12 @@ jr_005_5d1f:
 
 
 Call_005_5d31:
-    ld c, $0a
+    ld c, $0c                   ; was $0a: NEW GAME now on the bottom row
     ld a, [$c685]
     cp $00
     jr z, jr_005_5d3c
 
-    ld c, $0c
+    ld c, $0a                   ; was $0c: CONTINUE now on the top row
 
 jr_005_5d3c:
     ld b, $05
@@ -12886,54 +12893,6 @@ jr_005_6924:
     nop
     nop
     nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-
 
 ; ============================================================================
 ; GBC_NavQueueAndPump: called in place of Call_005_564a's final
@@ -12945,5 +12904,47 @@ jr_005_6924:
 GBC_NavQueueAndPump:
     call Call_000_0153
     jp Call_000_017a
+
+; ============================================================================
+; Puzzle NEW GAME/CONTINUE menu, swapped so CONTINUE sits on top and is
+; pre-selected when a save exists ($a459 != $ff). $c685 keeps its original
+; meaning (0=NEW GAME, 1=CONTINUE); only the on-screen rows and the default
+; are inverted (rows also swapped in Call_005_5d14/Call_005_5d31).
+;
+; GBC_PuzzleMenuReload: replaces the map $24 reload of Jump_005_450f
+; (which bypasses the ss$00 init when backing out of the confirm screens).
+; GBC_PuzzleMenuInit: replaces "xor a / ld [$c685],a / call Call_005_5d14"
+; in the menu init. Both run right after the map was decompressed into the
+; shadow map, so swapping the two text lines there is picked up by the
+; GDMA flip.
+; ============================================================================
+GBC_PuzzleMenuReload:
+    ld e, $24
+    call Call_000_015c          ; decompress map $24 into shadow + queue redraw
+GBC_PuzzleMenuInit:
+    ld hl, $d146                ; shadow row 10 cols 6-13 ("NEW GAME")
+    ld de, $d186                ; shadow row 12 cols 6-13 ("CONTINUE")
+    ld b, $08
+.swap:
+    ld a, [de]
+    ld c, a
+    ld a, [hl]
+    ld [de], a
+    ld a, c
+    ld [hl+], a
+    inc de
+    dec b
+    jr nz, .swap
+    ld a, $80                   ; blank, same tile the cursor-erase draws
+    ld [$d145], a               ; cursor cell row 10 (map data embeds $f4 here)
+    ld [$d185], a               ; cursor cell row 12
+    ld a, [$a459]
+    cp $ff
+    ld a, $01                   ; save exists -> pre-select CONTINUE
+    jr nz, .store
+    xor a                       ; no save -> NEW GAME (CONTINUE would be a no-op)
+.store:
+    ld [$c685], a
+    jp Call_005_5d14            ; draw cursor on the selected row
 
     ds $8000 - @, 0

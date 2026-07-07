@@ -172,10 +172,80 @@ ExpandLutSpec:
 
 
 ; ----------------------------------------------------------------------------
+; GBC_LicenseSkip - press A on the boot license screen (GAME_STATE $00,
+; map $3e, substates 6-8) to jump straight to the fade-out toward the title.
+; The joypad edge state ($ff8d) is refreshed by the main loop before the
+; state dispatch, so the skip takes effect on the next frame's dispatch.
+; ----------------------------------------------------------------------------
+GBC_LicenseSkip:
+    ld a, [GAME_STATE]
+    or a
+    ret nz
+    ld a, [SCREEN_SUBSTATE]
+    cp $06                      ; before the license map is up: nothing to skip
+    ret c
+    cp $09                      ; $09 = fade-out already running
+    ret nc
+    ldh a, [$ff8d]              ; newly pressed buttons
+    and $01                     ; A
+    ret z
+    ld a, $09                   ; jump to the exit substate...
+    ld [SCREEN_SUBSTATE], a
+    xor a
+    ld [$c5ab], a               ; ...with its hold timer expired...
+    ld [$c66a], a               ; ...and a fresh DMG fade sequencer, exactly
+    ld [$c66c], a               ; as the natural ss7 exit does via
+    ld a, $08                   ; "ld a,$08" + InitPaletteFade (Call_000_0162)
+    ld [$c66b], a
+    ret
+
+
+; ----------------------------------------------------------------------------
+; GBC_LicenseCredit - while the boot license screen is up (GAME_STATE $00,
+; substates 6-8), stamps "CUSTOMIZED BY JC144" into shadow row 30
+; ($d000 + 30*32) - the bottom visible row once the scroll settles at
+; SCY=104. Runs from Bank10_Frame, which the main loop calls after the state
+; dispatch and before the VBlank wait, so the stamp always lands before the
+; queued 20x31 tilemap upload (the ss5 loader's QueueTextDraw height was
+; widened from $1c to $1f in bank05 to cover row 30). The letter tiles reuse
+; the screen's resident font, so palette attributes come from the LUT like
+; every other cell.
+; ----------------------------------------------------------------------------
+GBC_LicenseCredit:
+    ld a, [GAME_STATE]
+    or a
+    ret nz
+    ld a, [SCREEN_SUBSTATE]
+    cp $06                      ; license map not decoded yet
+    ret c
+    cp $09                      ; fade-out running: nothing left to stamp
+    ret nc
+    ld hl, .text
+    ld de, $d3c0                ; shadow row 30, col 0 (19 chars in 20 cols)
+    ld b, 19
+.copy:
+    ld a, [hl+]
+    ld [de], a
+    inc de
+    dec b
+    jr nz, .copy
+    ret
+.text:
+    ; "CUSTOMIZED BY JC144" (license font: A=$8b.., digits 0=$81.., space=$00)
+    db $8d, $9f, $9d, $9e, $99, $97, $93, $a4, $8f, $8e  ; CUSTOMIZED
+    db $00
+    db $8c, $a3                                          ; BY
+    db $00
+    db $94, $8d, $82, $85, $85                           ; JC144
+
+
+; ----------------------------------------------------------------------------
 ; Bank10_Frame - runs every main-loop iteration right after the shadow OAM
 ; rebuild (bridged by GBC_FrameHook).
 ; ----------------------------------------------------------------------------
 Bank10_Frame::
+    call GBC_LicenseSkip
+    call GBC_LicenseCredit
     ; 1) On a DMG shadow change / screen switch, decide: instant snap (screen
     ;    loads, flash effects) or smooth per-frame fade (sequencer values).
     ld a, [wFadeReq]
@@ -191,16 +261,13 @@ Bank10_Frame::
     ld hl, wLastBGP
     cp [hl]
     jr z, .snap                 ; OBP-only change = sprite flash effect
-    or a
-    jr z, .smooth               ; $00 \
-    cp $40                      ;      |
-    jr z, .smooth               ; $40  | the DMG fade sequencer only ever
-    cp $90                      ;      | writes these BGP values; anything
-    jr z, .smooth               ; $90  | else is a flash -> keep it instant
-    cp $e4                      ;      |
-    jr z, .smooth               ; $e4  |
-    inc a                       ;      |
-    jr nz, .snap                ; $ff /
+    cp $40
+    jr z, .smooth               ; $40 \  the sequencer's visible fade steps
+    cp $90                      ;      | lerp; the endpoints $00/$ff snap to
+    jr z, .smooth               ; $90  | pure white/black (RemapOrClamp) so
+    cp $e4                      ;      | the loads the game performs behind a
+    jr z, .smooth               ; $e4 /  "blank" screen stay invisible, as on
+    jr .snap                    ;        DMG. Anything else is a flash: snap.
 
 .smooth:
     ld a, $01
@@ -235,7 +302,7 @@ Bank10_Frame::
     ld c, a
     ld hl, wPalStagingBG
     ld b, 8
-    call RemapPalettes
+    call RemapOrClampPalettes
     pop hl
     ld a, [hl+]
     ld e, a
@@ -246,12 +313,12 @@ Bank10_Frame::
     ld c, a
     ld hl, wPalStagingOBJ
     ld b, 4                     ; OBJ palettes 0-3 follow OBP0
-    call RemapPalettes
+    call RemapOrClampPalettes
     ld a, [OBP1_SHADOW]
     ld [wLastOBP1], a
     ld c, a
     ld b, 4                     ; OBJ palettes 4-7 follow OBP1
-    call RemapPalettes
+    call RemapOrClampPalettes
     ld a, $01
     ld [wPalDirty], a
     jp .oam
@@ -365,6 +432,40 @@ Bank10_Frame::
     ld [hl+], a
     dec c
     jr nz, .entry
+    ret
+
+
+; ----------------------------------------------------------------------------
+; RemapOrClampPalettes - RemapPalettes, except the DMG fade endpoints produce
+; uniform CRAM: C=$00 -> all pure white ($7fff), C=$ff -> all pure black.
+; On DMG, shade 0/3 is white/black for EVERY tile, so a completed fade blanks
+; the whole screen and hides the tileset/tilemap loading done behind it; CGB
+; palettes each have their own color 0/3, which left those loads faintly
+; visible. Same interface as RemapPalettes (advances DE and HL by B*8);
+; C is clobbered in the clamp paths (all callers reload it).
+; ----------------------------------------------------------------------------
+RemapOrClampPalettes:
+    ld a, c
+    or a
+    jr z, .white
+    inc a
+    jr nz, RemapPalettes
+    ld c, a                     ; C=$ff: black -> lo=$00, hi=$00
+    jr .fill
+.white:
+    ld a, $ff                   ; C=$00: white -> lo=$ff, hi=$7f
+    ld c, $7f
+.fill:
+    sla b                       ; B palettes -> B*4 colors
+    sla b
+.color:
+    ld [hl+], a                 ; low byte
+    ld [hl], c                  ; high byte
+    inc hl
+    inc de                      ; keep DE tracking the base-palette advance
+    inc de
+    dec b
+    jr nz, .color
     ret
 
 
