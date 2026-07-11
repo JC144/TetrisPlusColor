@@ -2319,7 +2319,7 @@ jr_000_0acf:
     ld a, $01
     ld [RENDER_REQUEST], a
     ldh a, [$ff8d]
-    and $08
+    and $09
     jr z, jr_000_0b20
 
     ld b, $01
@@ -2340,7 +2340,7 @@ jr_000_0acf:
 
 jr_000_0b20:
     ldh a, [$ff8d]
-    and $01
+    and $02
     jr z, jr_000_0b2b
 
     ld a, $3c

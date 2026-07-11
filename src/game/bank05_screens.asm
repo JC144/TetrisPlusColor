@@ -2177,7 +2177,7 @@ jr_005_4d2c:
 
 
     ldh a, [$ff8d]
-    and $08
+    and $09
     jr z, jr_005_4d7f
 
     ld b, $01
@@ -2199,7 +2199,7 @@ jr_005_4d2c:
 
 jr_005_4d7f:
     ldh a, [$ff8d]
-    and $01
+    and $02
     jr z, jr_005_4d8a
 
     ld a, $3c
@@ -7033,7 +7033,7 @@ jr_005_6868:
     ret z
 
     ldh a, [$ff8d]
-    and $08
+    and $09
     jr z, jr_005_68a5
 
     ld a, $08
@@ -7045,7 +7045,7 @@ jr_005_6868:
 
 jr_005_68a5:
     ldh a, [$ff8d]
-    and $01
+    and $02
     jr z, jr_005_68b0
 
     ld a, $3c
