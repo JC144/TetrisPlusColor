@@ -313,11 +313,11 @@ jr_005_4178:
 
 
     ld b, $04
-    ld c, $0e
+    ld c, $0f
     ld e, $01
     call Call_000_0156
     ld h, $01
-    ld l, $c0
+    ld l, $e0
     ld b, $14
     ld c, $01
     call Call_000_0153
@@ -328,11 +328,11 @@ jr_005_4178:
     jp z, Jump_005_41ea
 
     ld b, $04
-    ld c, $0e
+    ld c, $0f
     ld e, $02
     call Call_000_0156
     ld h, $01
-    ld l, $c0
+    ld l, $e0
     ld b, $14
     ld c, $01
     call Call_000_0153
