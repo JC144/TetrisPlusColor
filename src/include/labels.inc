@@ -81,6 +81,8 @@ DEF wGDMARequest         EQU $cd90  ; VBlank GDMA request bits: bit0 = tilemap+a
 DEF wGDMARowCnt          EQU $cd91  ; row counter for GBC_PrepareGDMAFlip
 DEF wCurMapId            EQU $cd92  ; RLE map id of the last RenderTilemapCell call
                                     ; (set by Bank10_OnMapLoad, read by map remaps)
+DEF wCloudTimer          EQU $cd93  ; 16-bit LE: title-screen cloud drift counter
+DEF wCloudsOn            EQU $cd95  ; 1 = cloud sprites occupy shadow-OAM slots 31-39
 DEF wAttrRowTemp         EQU $cda0  ; 32 bytes ($cda0-$cdbf): one tilemap row, ids then attrs
 ; WRAM bank 2 (SVBK=2) staging. The original DMG game never touches rSVBK,
 ; so banks 2-7 are entirely free.

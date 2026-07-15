@@ -65,25 +65,25 @@ Spec_intro_obj:
 
 Pal_title_bg:
     dw $7FFF, $56B5, $294A, $0842
-    dw $7FFF, $275F, $021C, $00AE
-    dw $7FFF, $7B32, $65A6, $34A2
+    dw $7EEF, $275F, $021C, $00AE
+    dw $7EEF, $7B32, $65A6, $34A2
     dw $7FFF, $3EBA, $2192, $08A8
     dw $7FFF, $533F, $1958, $0425
     dw $7FFF, $4B94, $2687, $1101
-    dw $7FFF, $4B94, $2687, $1101
-    dw $7FFF, $4B94, $2687, $1101
+    dw $7EEF, $7FFF, $7F9A, $3502
+    dw $7EEF, $7FFF, $7F9A, $3502
 Pal_title_obj:
     dw $7FFF, $4B3F, $19B8, $0444
-    dw $7FFF, $4B3F, $19B8, $0444
-    dw $7FFF, $4B3F, $19B8, $0444
-    dw $7FFF, $4B3F, $19B8, $0444
-    dw $7FFF, $4B3F, $19B8, $0444
-    dw $7FFF, $4B3F, $19B8, $0444
-    dw $7FFF, $4B3F, $19B8, $0444
-    dw $7FFF, $4B3F, $19B8, $0444
+    dw $7EEF, $7FFF, $7FBB, $7315
+    dw $7EEF, $7FFF, $7FBB, $7315
+    dw $7EEF, $7FFF, $7FBB, $7315
+    dw $7EEF, $7FFF, $7FBB, $7315
+    dw $7EEF, $7FFF, $7FBB, $7315
+    dw $7EEF, $7FFF, $7FBB, $7315
+    dw $7EEF, $7FFF, $7FBB, $7315
 Spec_title_bg:
     db $00  ; default attribute
-    db 15    ; range count
+    db 19    ; range count
     db $01, $23, $01
     db $24, $3F, $02
     db $40, $44, $03
@@ -99,9 +99,14 @@ Spec_title_bg:
     db $63, $64, $03
     db $65, $65, $05
     db $66, $69, $03
+    db $00, $00, $06
+    db $8B, $9E, $06
+    db $F2, $F3, $06
+    db $F4, $F4, $06
 Spec_title_obj:
     db $00  ; default attribute
-    db 0    ; range count
+    db 1    ; range count
+    db $F5, $FF, $01
 
 Pal_menus_bg:
     dw $7FFF, $56B5, $294A, $0842

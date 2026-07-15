@@ -243,12 +243,100 @@ GBC_LicenseCredit:
 
 
 ; ----------------------------------------------------------------------------
+; GBC_TitleClouds - drifting cloud sprites over the title-screen sky.
+; Rewrites shadow-OAM slots 31-39 every title frame (the OAM rebuild
+; zero-fills unused slots whenever RENDER_REQUEST is set) and forces
+; RENDER_REQUEST so the VBlank OAM DMA runs each frame. Gates on GAME_STATE,
+; not wCurMapId: the PRESS START blink redraws through RenderTilemapCell with
+; partial-draw ids ($01/$02) that stomp wCurMapId every frame.
+; OAM flag $80 = sprite behind BG colors 1-3 (logo letters) but in front of
+; color 0 (sky); the .oam walk in Bank10_Frame ORs in the OBJ palette bits.
+; ----------------------------------------------------------------------------
+GBC_TitleClouds:
+    ld a, [GAME_STATE]
+    cp $01
+    jr nz, .off
+    ld a, [SCREEN_SUBSTATE]
+    or a
+    jr z, .off                  ; substate 0 = map still loading
+    ld hl, wCloudTimer          ; 16-bit tick
+    inc [hl]
+    jr nz, .ticked
+    inc hl
+    inc [hl]
+.ticked:
+    ld de, SHADOW_OAM + 31 * 4  ; slots 31-39
+    ld hl, .clouds
+.cloud:
+    ld a, [hl+]                 ; parallax shift ($ff = end of table)
+    cp $ff
+    jr z, .armed
+    ld c, a
+    ld a, [wCloudTimer]
+    ld b, a
+    ld a, [wCloudTimer + 1]
+.shift:
+    srl a
+    rr b
+    dec c
+    jr nz, .shift               ; B = low byte of (timer >> shift)
+    ld a, [hl+]                 ; sprite count for this cloud
+    ld c, a
+.sprite:
+    ld a, [hl+]                 ; Y
+    ld [de], a
+    inc de
+    ld a, [hl+]                 ; base X
+    sub b                       ; drift left; 8-bit wrap = exit left,
+    ld [de], a                  ; re-enter right after an offscreen gap
+    inc de
+    ld a, [hl+]                 ; tile id
+    ld [de], a
+    inc de
+    ld a, $80                   ; BG-priority flag (see header)
+    ld [de], a
+    inc de
+    dec c
+    jr nz, .sprite
+    jr .cloud
+.armed:
+    ld a, $01
+    ld [wCloudsOn], a
+    ld [RENDER_REQUEST], a      ; keep the VBlank OAM DMA firing every frame
+    ret
+.off:
+    ld a, [wCloudsOn]
+    or a
+    ret z
+    xor a
+    ld [wCloudsOn], a
+    ld hl, SHADOW_OAM + 31 * 4  ; hide our 9 slots (36 bytes)
+    ld b, 36
+.clear:
+    ld [hl+], a
+    dec b
+    jr nz, .clear
+    ld a, $01
+    ld [RENDER_REQUEST], a      ; flush the cleared slots to real OAM
+    ret
+
+.clouds:
+    ; per cloud: db shift, sprite_count, then count * [Y, baseX, tile id]
+    db 2, 4                     ; cloud A: 32 px, ~15 px/s, screen y=10
+    db 26,  40, $f6,  26,  48, $f7,  26,  56, $f8,  26,  64, $f9
+    db 3, 3                     ; cloud B: 24 px, ~7.5 px/s, screen y=28
+    db 44, 140, $fa,  44, 148, $fb,  44, 156, $fc
+    db $ff
+
+
+; ----------------------------------------------------------------------------
 ; Bank10_Frame - runs every main-loop iteration right after the shadow OAM
 ; rebuild (bridged by GBC_FrameHook).
 ; ----------------------------------------------------------------------------
 Bank10_Frame::
     call GBC_LicenseSkip
     call GBC_LicenseCredit
+    call GBC_TitleClouds
     ; 1) On a DMG shadow change / screen switch, decide: instant snap (screen
     ;    loads, flash effects) or smooth per-frame fade (sequencer values).
     ld a, [wFadeReq]
