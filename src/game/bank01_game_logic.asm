@@ -3554,8 +3554,8 @@ Call_001_5566:
     cp $00
     jr nz, jr_001_5572
 
-    ldh a, [$ff8d]
-    and $08
+    call GBC_PauseMenuValidate  ; was: ldh a, [$ff8d] / and $08 (iso-size)
+    nop
     ret
 
 
@@ -3616,8 +3616,8 @@ jr_001_55a1:
     jp nz, Jump_001_55fe
 
 Jump_001_55db:
-    ldh a, [$ff8d]
-    and $08
+    call GBC_PauseMenuValidate  ; was: ldh a, [$ff8d] / and $08 (iso-size)
+    nop
     ret z
 
     ld a, [$c73e]
@@ -11036,6 +11036,29 @@ GBC_PrepareGDMAFlip:
     ld a, [wGDMARequest]
     or $01
     ld [wGDMARequest], a
+    ret
+
+; ============================================================================
+; GBC_PauseMenuValidate: pause-menu validation, replaces the bare
+; "ldh a,[$ff8d] / and $08" Start checks in Call_001_5566.
+; A validates the current CONTINUE/RETIRE selection; Start always resumes
+; (forces selection to CONTINUE first). Consumes the button edge so the
+; press doesn't leak into gameplay (A would rotate the piece) on the
+; resume frame, which runs with this frame's edges still in $ff8d.
+; Returns NZ (a=1) to proceed with validation, Z (a=0) to stay paused.
+; ============================================================================
+GBC_PauseMenuValidate:
+    ldh a, [$ff8d]
+    and $09              ; Start ($08) or A ($01) newly pressed?
+    ret z                ; neither -> stay paused (Z, a=0)
+    and $08
+    jr z, .consume       ; A alone -> validate current selection
+    xor a
+    ld [$c73e], a        ; Start -> force selection to CONTINUE
+.consume:
+    xor a
+    ldh [$ff8d], a       ; eat the edges for this frame
+    or $01               ; a=1, NZ -> caller proceeds to validate
     ret
 
     ds $8000 - @, 0
