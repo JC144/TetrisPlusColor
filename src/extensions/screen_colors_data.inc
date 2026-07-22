@@ -84,9 +84,10 @@ Pal_title_obj:
 Spec_title_bg:
     db $00  ; default attribute
     db 19    ; range count
+    db $00, $00, $06
     db $01, $23, $01
     db $24, $3F, $02
-    db $40, $44, $03
+    db $40, $44, $01
     db $45, $49, $05
     db $4A, $4C, $04
     db $4D, $50, $05
@@ -98,11 +99,10 @@ Spec_title_bg:
     db $61, $62, $04
     db $63, $64, $03
     db $65, $65, $05
-    db $66, $69, $03
-    db $00, $00, $06
+    db $66, $66, $03
+    db $67, $69, $01
     db $8B, $9E, $06
-    db $F2, $F3, $06
-    db $F4, $F4, $06
+    db $F2, $F4, $06
 Spec_title_obj:
     db $00  ; default attribute
     db 1    ; range count
@@ -112,11 +112,11 @@ Pal_menus_bg:
     dw $7FFF, $56B5, $294A, $0842
     dw $7FDD, $6EB1, $5167, $2062
     dw $7FFF, $433F, $19F9, $04AA
-    dw $7FFF, $433F, $19F9, $04AA
-    dw $7FFF, $433F, $19F9, $04AA
-    dw $7FFF, $433F, $19F9, $04AA
-    dw $7FFF, $433F, $19F9, $04AA
-    dw $7FFF, $433F, $19F9, $04AA
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
 Pal_menus_obj:
     dw $7FFF, $4B3F, $19B8, $0444
     dw $7FFF, $4B3F, $19B8, $0444
@@ -127,16 +127,31 @@ Pal_menus_obj:
     dw $7FFF, $4B3F, $19B8, $0444
     dw $7FFF, $4B3F, $19B8, $0444
 Spec_menus_bg:
-    db $00  ; default attribute
-    db 2    ; range count
-    db $01, $53, $02
-    db $B0, $EA, $01
+    db $02  ; default attribute
+    db 17    ; range count
+    db $00, $00, $00
+    db $54, $54, $00
+    db $55, $78, $03
+    db $79, $8D, $00
+    db $8E, $8F, $03
+    db $90, $96, $00
+    db $97, $97, $03
+    db $98, $98, $00
+    db $99, $99, $03
+    db $9A, $A4, $00
+    db $A5, $A6, $03
+    db $A7, $A7, $00
+    db $A8, $AC, $03
+    db $AD, $AF, $00
+    db $BD, $C1, $03
+    db $C6, $C9, $03
+    db $EB, $FF, $00
 Spec_menus_obj:
     db $00  ; default attribute
     db 0    ; range count
 
 Pal_gameplay_bg:
-    dw $7FFF, $66F5, $51CA, $1882
+    dw $7FFF, $5AD6, $35AD, $0000
     dw $7FFF, $7BD0, $66E0, $3980
     dw $7FFF, $339F, $02BA, $016E
     dw $7FFF, $7A1A, $60D2, $3049
@@ -170,12 +185,12 @@ Spec_gameplay_obj:
 Pal_puzzlemenu_bg:
     dw $7FFF, $56B5, $294A, $0842
     dw $7FDD, $6EB1, $5167, $2062
-    dw $7FDD, $6EB1, $5167, $2062
-    dw $7FDD, $6EB1, $5167, $2062
-    dw $7FDD, $6EB1, $5167, $2062
-    dw $7FDD, $6EB1, $5167, $2062
-    dw $7FDD, $6EB1, $5167, $2062
-    dw $7FDD, $6EB1, $5167, $2062
+    dw $7FFF, $431E, $19D8, $04A9
+    dw $7FFF, $431E, $19D8, $0000
+    dw $7FFF, $431E, $19D8, $0000
+    dw $7FFF, $431E, $19D8, $0000
+    dw $7FFF, $431E, $19D8, $0000
+    dw $7FFF, $431E, $19D8, $0000
 Pal_puzzlemenu_obj:
     dw $7FFF, $4B3F, $19B8, $0444
     dw $7FFF, $4B3F, $19B8, $0444
@@ -186,10 +201,29 @@ Pal_puzzlemenu_obj:
     dw $7FFF, $4B3F, $19B8, $0444
     dw $7FFF, $4B3F, $19B8, $0444
 Spec_puzzlemenu_bg:
-    db $00  ; default attribute
-    db 2    ; range count
-    db $01, $53, $01
-    db $B0, $EA, $01
+    db $01  ; default attribute
+    db 21    ; range count
+    db $00, $00, $03
+    db $02, $02, $03
+    db $03, $06, $02
+    db $08, $0A, $02
+    db $54, $8A, $00
+    db $8B, $8B, $03
+    db $8C, $8C, $00
+    db $8D, $8F, $03
+    db $90, $90, $00
+    db $91, $93, $03
+    db $94, $95, $00
+    db $96, $99, $03
+    db $9A, $9B, $00
+    db $9C, $A1, $03
+    db $A2, $A2, $00
+    db $A3, $A3, $03
+    db $A4, $A8, $00
+    db $A9, $B2, $03
+    db $EB, $F3, $00
+    db $F4, $F4, $02
+    db $F5, $FF, $00
 Spec_puzzlemenu_obj:
     db $00  ; default attribute
     db 0    ; range count
@@ -246,13 +280,13 @@ Spec_tryagain_obj:
 
 Pal_worldmap_bg:
     dw $7FFF, $56B5, $294A, $0842
-    dw $7B31, $32EC, $6606, $3503
-    dw $7B31, $32EC, $6606, $3503
-    dw $7B31, $32EC, $6606, $3503
-    dw $7B31, $32EC, $6606, $3503
-    dw $7B31, $32EC, $6606, $3503
-    dw $7B31, $32EC, $6606, $3503
-    dw $7B31, $32EC, $6606, $3503
+    dw $32EC, $7F32, $7FB9, $3503
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
+    dw $7FFF, $433F, $19F9, $0000
 Pal_worldmap_obj:
     dw $7FFF, $4B3F, $19B8, $0444
     dw $7FFF, $4B3F, $19B8, $0444
@@ -264,8 +298,14 @@ Pal_worldmap_obj:
     dw $7FFF, $4B3F, $19B8, $0444
 Spec_worldmap_bg:
     db $00  ; default attribute
-    db 1    ; range count
+    db 7    ; range count
+    db $00, $17, $02
     db $18, $7B, $01
+    db $8F, $8F, $02
+    db $91, $91, $02
+    db $9A, $9A, $02
+    db $9E, $9E, $02
+    db $A3, $A3, $02
 Spec_worldmap_obj:
     db $00  ; default attribute
     db 0    ; range count

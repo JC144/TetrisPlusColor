@@ -52,7 +52,9 @@ class KitExporter:
                 self.loads_since.append(entry)
                 self.history.append(entry)
             return
-        start, end = diff[0], diff[-1] + 1
+        # align to the 16-byte tile grid: the studio decodes tiles from dest,
+        # so a diff starting mid-tile would shift every tile's bytes
+        start, end = diff[0] & ~0xF, (diff[-1] + 16) & ~0xF
         info = self.chr_entries.get(entry)
         if info:  # extend the known range (idempotent reloads may differ less)
             start = min(start, info["dest"] - VRAM0)
