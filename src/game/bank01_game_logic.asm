@@ -11061,4 +11061,47 @@ GBC_PauseMenuValidate:
     or $01               ; a=1, NZ -> caller proceeds to validate
     ret
 
+; ============================================================================
+; GBC_ContinuePreviewErase: called in place of the puzzle CONTINUE-accept
+; branch's "call QueueTextDraw" (iso-size 3-byte patch, bank00 $0b02 area,
+; bank01 mapped there). The accept branch reloads only the well (map $47,
+; cols 1-10), so the two next-piece preview boxes kept showing the previous
+; game's pieces until the spawner re-armed ~2s later. Queue the well redraw
+; as the original did, then blank the preview cells in the shadow map (same
+; cells/tile as the game-over erase before Jump_000_07c7) and queue a 6x4
+; redraw of the preview area.
+; ============================================================================
+GBC_ContinuePreviewErase::
+    call QueueTextDraw          ; original: queue the 10x17 well redraw
+    xor a
+    ld hl, $d02d                ; big preview box, row 1 (cols 13-16)
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld hl, $d04d                ; row 2
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld hl, $d06d                ; row 3 (cols 13-18, incl. small box)
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld hl, $d08d                ; row 4
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld h, $00                   ; queue 6x4 preview-area redraw at $d02d
+    ld l, $2d
+    ld b, $06
+    ld c, $04
+    jp QueueTextDraw
+
     ds $8000 - @, 0

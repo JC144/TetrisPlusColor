@@ -2330,7 +2330,7 @@ jr_000_0acf:
     ld l, $01
     ld b, $0a
     ld c, $11
-    call QueueTextDraw
+    call GBC_ContinuePreviewErase ; was: call QueueTextDraw
     ld a, $01
     ldh [$ffa0], a
     xor a

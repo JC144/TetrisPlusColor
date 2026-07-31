@@ -2188,7 +2188,7 @@ jr_005_4d2c:
     ld l, $01
     ld b, $0a
     ld c, $11
-    call Call_000_0153
+    call GBC_ContinuePreviewEraseAlt ; was: call Call_000_0153
     ld a, $01
     ldh [$ffa0], a
     xor a
@@ -12855,44 +12855,6 @@ jr_005_6924:
     nop
     nop
     nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
 
 ; ============================================================================
 ; GBC_NavQueueAndPump: called in place of Call_005_564a's final
@@ -12946,5 +12908,48 @@ GBC_PuzzleMenuInit:
 .store:
     ld [$c685], a
     jp Call_005_5d14            ; draw cursor on the selected row
+
+; ============================================================================
+; GBC_ContinuePreviewEraseAlt: same fix as bank01's GBC_ContinuePreviewErase
+; but for the $c692-machine copy of the CONTINUE flow in this bank; called in
+; place of its accept branch's "call Call_000_0153" (iso-size 3-byte patch).
+; That branch reloads only the well (map $47, cols 1-10), so the next-piece
+; preview boxes kept showing the previous game's pieces until the spawner
+; re-armed ~2s later. Queue the well redraw as the original did, then blank
+; the preview cells in the shadow map (same cells/tile as the erase at
+; Jump_000_07c7's caller) and queue a 6x4 redraw of the preview area.
+; ============================================================================
+GBC_ContinuePreviewEraseAlt:
+    call Call_000_0153          ; queue the 10x17 well redraw
+    xor a
+    ld hl, $d02d                ; big preview box, row 1 (cols 13-16)
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld hl, $d04d                ; row 2
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld hl, $d06d                ; row 3 (cols 13-18, incl. small box)
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld hl, $d08d                ; row 4
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    ld h, $00                   ; queue 6x4 preview-area redraw at $d02d
+    ld l, $2d
+    ld b, $06
+    ld c, $04
+    jp Call_000_0153
 
     ds $8000 - @, 0
