@@ -196,20 +196,22 @@ Call_000_006b:
     nop
 
 Jump_000_006d:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+; ----------------------------------------------------------------------------
+; GBC_BootHardwareCheck: DMG lockout guard, jumped to from the entry point
+; ($0101) before A is clobbered. The CGB boot ROM leaves A=$11 (DMG=$01,
+; MGB/SGB2=$FF, SGB=$01): anything but $11 cannot run this CGB-only build,
+; so map bank $10 and show the lockout screen instead of booting broken.
+; Lives in the unused interrupt-vector padding; the surrounding labels are
+; only referenced by data artifacts in the tile banks and must stay pinned,
+; hence the nop padding below (13 bytes of code, $006d-$0079).
+; ----------------------------------------------------------------------------
+GBC_BootHardwareCheck::
+    cp $11
+    jp z, Jump_000_0150         ; CGB/GBA: continue the original boot path
+    ld a, $10
+    ld [$2000], a               ; MBC1: map ROM bank $10
+    jp Bank10_DMGLockout        ; never returns
+    nop                         ; pad so Call_000_0081 stays at $0081
     nop
     nop
     nop
@@ -380,7 +382,7 @@ Boot::
     nop
 
 Jump_000_0101:
-    jp Jump_000_0150
+    jp GBC_BootHardwareCheck    ; DMG lockout: checks boot A, resumes at $0150 on CGB
 
 
 HeaderLogo::
@@ -11514,8 +11516,9 @@ jr_000_3ede:
 ; GBC_GDMADispatch: serves one wGDMARequest bit per VBlank (called from the
 ; trampoline head with A = request bits, nonzero). Bit 0 (full tilemap+attr
 ; flip) has priority; bit 1 (vignette CHR from wChrStaging to $9000) runs the
-; following VBlank if both are armed. rVBK is forced to 0 for the CHR upload:
-; the interrupt may have landed inside WriteTileWithPalette's VBK=1 window.
+; following VBlank if both are armed. rVBK is forced to 0 for the CHR upload;
+; this is safe: the only main-thread VBK=1 window (WriteTileWithPalette)
+; runs under di/ei, so the interrupt can never land inside it.
 ; (Occupies the former nop island $3ee8-$3f23; the old Call_000_3efc /
 ; Jump_000_3eff / Jump_000_3f00 labels here were only referenced as data
 ; bytes from banks 07/0a, now literals at those sites.)
@@ -11546,6 +11549,19 @@ GBC_GDMADispatch:
     ldh [rHDMA5], a             ; GDMA, 84 blocks = $540 bytes
     ld a, $01
     ldh [rSVBK], a
+    ret
+
+; ============================================================================
+; GBC_BootBridge: ROM0 bridge so BootInitColors (bank 1 code) can run the
+; bank10 boot init without remapping itself out from under PC. (Lives in the
+; tail of the $3ee8 island to leave room for the unrolled palette upload.)
+; ============================================================================
+GBC_BootBridge::
+    ld a, $10
+    rst $10
+    call Bank10_BootInit
+    ld a, $01
+    rst $10
     ret
 
     ds $3f24 - @, 0
@@ -11592,23 +11608,34 @@ VBlankTrampoline_Bank0:
     call GBC_GDMADispatch
     jr .done
 .pal:
+    ; 128 CRAM bytes, 2x unrolled via [c] = 6 M-cycles/byte (~768 M total).
+    ; The whole ISR (~850 M) plus the original handler's OAM DMA + scroll
+    ; (~230 M) must stay inside the 1140 M-cycle VBlank window: CRAM writes
+    ; are dropped in mode 3 on real hardware (the old 9 M/byte loop overran).
     xor a
     ld [wPalDirty], a
     ld a, $80
     ldh [rBCPS], a
     ld hl, wPalStagingBG
-    ld b, 64
+    ld c, LOW(rBCPD)
+    ld b, 32
 .bg:
     ld a, [hl+]
-    ldh [rBCPD], a
+    ldh [c], a
+    ld a, [hl+]
+    ldh [c], a
     dec b
     jr nz, .bg
     ld a, $80
     ldh [rOCPS], a
-    ld b, 64
+    inc c                       ; rBCPD -> rOCPD
+    inc c
+    ld b, 32
 .obj:
     ld a, [hl+]
-    ldh [rOCPD], a
+    ldh [c], a
+    ld a, [hl+]
+    ldh [c], a
     dec b
     jr nz, .obj
 .done:
@@ -11646,18 +11673,6 @@ GBC_FrameHook:
     ld a, $10
     rst $10
     call Bank10_Frame
-    ld a, $01
-    rst $10
-    ret
-
-; ============================================================================
-; GBC_BootBridge: ROM0 bridge so BootInitColors (bank 1 code) can run the
-; bank10 boot init without remapping itself out from under PC.
-; ============================================================================
-GBC_BootBridge::
-    ld a, $10
-    rst $10
-    call Bank10_BootInit
     ld a, $01
     rst $10
     ret

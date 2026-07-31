@@ -10841,8 +10841,13 @@ Call_001_7cbb:
 ; "call Call_001_544a / ld [hl+],a" pattern, invoked via the WRITE_TILE
 ; macro from all six shadow-map renderers).
 ; The attribute comes from wBGAttrLUT (installed per screen by the bank10
-; engine), looked up BEFORE the HBlank wait so the in-window work is only
+; engine), looked up BEFORE the STAT wait so the in-window work is only
 ; ~14 M-cycles (attr write on VRAM bank 1 + tile write on bank 0).
+; The window runs under di/ei: an IRQ between the STAT test and the writes
+; would leave a stale mode, and the ISR's GDMA paths force rVBK back to 0
+; (the attribute would land in VRAM bank 0 and be lost). Mode 1 is accepted
+; alongside mode 0 so the wait never spins across VBlank with IRQs masked
+; (worst-case IRQ latency: one mode 2+3 span, ~100 M-cycles).
 ; Input: A = tile, HL = VRAM destination. Advances HL. Preserves BC, DE.
 WriteTileWithPalette::
     push bc
@@ -10850,17 +10855,19 @@ WriteTileWithPalette::
     ld b, HIGH(wBGAttrLUT)
     ld a, [bc]                  ; attribute for this tile id
     ld b, a
+    di
 .wait:
     ldh a, [rSTAT]
-    and $03
+    and $02                     ; mode 0 or 1: VRAM writable
     jr nz, .wait
-    ld a, $01                   ; --- inside mode-0 window ---
+    ld a, $01                   ; --- inside write window ---
     ldh [rVBK], a
     ld [hl], b                  ; attribute -> VRAM bank 1
     xor a
     ldh [rVBK], a
     ld a, c
     ld [hl+], a                 ; tile -> VRAM bank 0
+    ei
     pop bc
     ret
 

@@ -128,8 +128,7 @@ Pal_menus_obj:
     dw $7FFF, $4B3F, $19B8, $0444
 Spec_menus_bg:
     db $02  ; default attribute
-    db 17    ; range count
-    db $00, $00, $00
+    db 16    ; range count
     db $54, $54, $00
     db $55, $78, $03
     db $79, $8D, $00
