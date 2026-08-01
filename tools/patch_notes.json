@@ -1,0 +1,21 @@
+{
+  "00:0afe": "CONTINUE screen (bank00 handler): accept A as well as Start to continue (and $08 -> and $09)",
+  "00:0b23": "CONTINUE screen (bank00 handler): counter decrement moved from A to B (and $01 -> and $02)",
+  "00:1928": "Call_000_1919 rewritten: stages the whole vignette CHR into wChrStaging (WRAM bank 2) and arms the VBlank GDMA, replacing the original 8-byte streaming loop",
+  "00:14e5": "tile id $6a -> $63 (top-left tile fix)",
+  "00:3952": "tile id $6a -> $63 (top-left tile fix)",
+  "00:3a28": "tile id $6a -> $63 (top-left tile fix)",
+  "05:40aa": "credits screen redraw: row count $1c -> $1f to cover the credit row (documented in source)",
+  "05:41b9": "map screen redraw geometry: c $0e -> $0f (one more row)",
+  "05:41c2": "map screen redraw geometry: source address low byte $c0 -> $e0",
+  "05:41d9": "map screen redraw geometry: c $0e -> $0f (one more row, second block)",
+  "05:41e2": "map screen redraw geometry: source address low byte $c0 -> $e0 (second block)",
+  "05:4d5c": "CONTINUE screen (bank05 handler): accept A as well as Start to continue (and $08 -> and $09)",
+  "05:4d82": "CONTINUE screen (bank05 handler): counter decrement moved from A to B (and $01 -> and $02)",
+  "05:5d15": "puzzle NEW GAME/CONTINUE menu: cursor row swap $0a -> $0c (Call_005_5d14)",
+  "05:5d1e": "puzzle NEW GAME/CONTINUE menu: cursor row swap $0c -> $0a (Call_005_5d14)",
+  "05:5d32": "puzzle NEW GAME/CONTINUE menu: cursor row swap $0a -> $0c (Call_005_5d31)",
+  "05:5d3b": "puzzle NEW GAME/CONTINUE menu: cursor row swap $0c -> $0a (Call_005_5d31)",
+  "05:6896": "CONTINUE screen (bank05 second handler): accept A as well as Start to continue (and $08 -> and $09)",
+  "05:68a8": "CONTINUE screen (bank05 second handler): counter decrement moved from A to B (and $01 -> and $02)"
+}

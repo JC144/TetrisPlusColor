@@ -1,10 +1,10 @@
 ; ============================================================================
-; BANK $0F - Padding
+; BANK $0F - Font & Misc Tiles
 ; ============================================================================
 ; Address: $4000-$7FFF (switchable)
 ;
-; Mostly padding bank. Contains some data at the start followed by
-; extensive NOP padding (~73% NOPs).
+; Font/tile data bank (misnamed "padding" by the original disassembly pass:
+; it holds real font and tile graphics, plus ~73% NOP filler).
 ;
 ; ============================================================================
 ; Originally disassembled with mgbdis v3.0 by Matt Currie

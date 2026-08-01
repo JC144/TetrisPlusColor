@@ -2,7 +2,7 @@
 ; TETRIS PLUS - Game Boy Color
 ; ============================================================================
 ; Main assembly file - includes all banks and shared definitions.
-; Build with: cd tools && build.bat
+; Build with: python tools/build.py  (build.bat is a wrapper around it)
 ;
 ; Originally disassembled with mgbdis v3.0 by Matt Currie
 ; ============================================================================
@@ -41,8 +41,7 @@ INCLUDE "graphics/bank0c_tiles.asm"
 INCLUDE "graphics/bank0d_tiles.asm"
 INCLUDE "graphics/bank0e_tiles.asm"
 
-; Data / padding
-INCLUDE "data/bank0f_padding.asm"
+INCLUDE "graphics/bank0f_font_tiles.asm"
 
 ; GBC colorization extensions
 INCLUDE "extensions/bank10_gbc_colorization.asm"

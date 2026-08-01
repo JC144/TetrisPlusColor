@@ -6,10 +6,12 @@
 ; Used in tile rendering loops throughout bank 1
 ; Byte count: ld a,[de] (1) + call (3) + nop (1) = 5 bytes
 MACRO WRITE_TILE
+    REDEF _WT_START EQU @
     ld a, [de]
     call WriteTileWithPalette
     nop ; load-bearing: keeps the macro at 5 bytes, same size as the
         ; original code it replaces — removing it shifts all of bank01
+    ASSERT @ - _WT_START == 5, "WRITE_TILE must stay 5 bytes (iso-size with the original code)"
 ENDM
 
 ; Switch to ROM bank (immediate value)
