@@ -22,14 +22,7 @@
 SECTION "ROM Bank $001", ROMX[$4000], BANK[$1]
 
 Call_001_4000:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 8, 0 ; 8 x nop ($00)
     ld bc, $0101
     ld bc, $0101
     ld bc, $0201
@@ -68,14 +61,7 @@ Call_001_4000:
     ld b, $06
     ld b, $06
     ld b, $06
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 8, 0 ; 8 x nop ($00)
     ld bc, $0101
     ld bc, $0101
     ld bc, $0201
@@ -114,14 +100,7 @@ Call_001_4000:
     ld b, $06
     ld b, $06
     ld b, $06
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 8, 0 ; 8 x nop ($00)
     ld bc, $0101
     ld bc, $0101
     ld bc, $0201
@@ -162,14 +141,7 @@ Jump_001_4081:
     ld b, $06
     ld b, $06
     ld b, $06
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 8, 0 ; 8 x nop ($00)
     ld bc, $0101
     ld bc, $0101
     ld bc, $0201
@@ -5700,15 +5672,7 @@ jr_001_6050:
     nop
     nop
     cp $00
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 9, 0 ; 9 x nop ($00)
     cp $00
     adc l
     sbc c
@@ -5720,15 +5684,7 @@ jr_001_6050:
     adc a
     nop
     cp $00
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 9, 0 ; 9 x nop ($00)
     cp $00
     sbc h
     adc a
@@ -5801,25 +5757,9 @@ jr_001_6050:
     nop
     nop
     cp $00
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 9, 0 ; 9 x nop ($00)
     cp $00
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 9, 0 ; 9 x nop ($00)
     cp $09
     add hl, bc
     add hl, bc
@@ -5831,25 +5771,9 @@ jr_001_6050:
     add hl, bc
     add hl, bc
     cp $00
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 9, 0 ; 9 x nop ($00)
     cp $00
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 9, 0 ; 9 x nop ($00)
     rst $38
     nop
     nop

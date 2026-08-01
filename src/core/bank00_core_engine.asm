@@ -219,6 +219,7 @@ GBC_BootHardwareCheck::
     nop
     nop
 
+ASSERT @ == $0081 ; Call_000_0081 is referenced by pinned code, must not move
 Call_000_0081:
 Jump_000_0081:
     nop
@@ -228,15 +229,7 @@ Jump_000_0082:
     nop
 
 Call_000_0084:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 9, 0 ; 9 x nop ($00)
 
 Call_000_008d:
     nop
@@ -247,49 +240,10 @@ Call_000_008d:
     nop
 
 Call_000_0093:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 23, 0 ; 23 x nop ($00)
 
 Jump_000_00aa:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 18, 0 ; 18 x nop ($00)
 
 Jump_000_00bc:
     nop
@@ -316,51 +270,10 @@ Call_000_00c8:
     nop
 
 Call_000_00cc:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 20, 0 ; 20 x nop ($00)
 
 Jump_000_00e0:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+    ds 23, 0 ; 23 x nop ($00)
 
 Call_000_00f7:
     nop
@@ -11566,6 +11479,7 @@ GBC_BootBridge::
 
     ds $3f24 - @, 0
 
+ASSERT @ == $3f24 ; VBlank trampoline pinned at $3f24 (called from RAM stub)
 Call_000_3f24:
 ; ============================================================================
 ; GBC VBlank trampoline. Order matters: detect DMG shadow changes FIRST --
