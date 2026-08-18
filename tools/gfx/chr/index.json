@@ -1,0 +1,212 @@
+{
+ "0": {
+  "bank": 13,
+  "src": 16384,
+  "dest": 34816,
+  "length": 3760,
+  "tiles": 235,
+  "screens": [
+   "intro_text1",
+   "intro_text2",
+   "title",
+   "options",
+   "puzzle_menu"
+  ]
+ },
+ "1": {
+  "bank": 13,
+  "src": 18589,
+  "dest": 34816,
+  "length": 4000,
+  "tiles": 250,
+  "screens": [
+   "mode_select",
+   "options",
+   "puzzle_menu"
+  ]
+ },
+ "2": {
+  "bank": 14,
+  "src": 23104,
+  "dest": 34816,
+  "length": 3792,
+  "tiles": 237,
+  "screens": [
+   "level_select",
+   "gameplay"
+  ]
+ },
+ "3": {
+  "bank": 14,
+  "src": 25090,
+  "dest": 34816,
+  "length": 4096,
+  "tiles": 256,
+  "screens": [
+   "puzzle_difficulty",
+   "puzzle_game"
+  ]
+ },
+ "4": {
+  "bank": 14,
+  "src": 27308,
+  "dest": 32768,
+  "length": 2048,
+  "tiles": 128,
+  "screens": []
+ },
+ "5": {
+  "bank": 13,
+  "src": 20088,
+  "dest": 34816,
+  "length": 4000,
+  "tiles": 250,
+  "screens": []
+ },
+ "6": {
+  "bank": 14,
+  "src": 23104,
+  "dest": 32768,
+  "length": 3792,
+  "tiles": 237,
+  "screens": []
+ },
+ "7": {
+  "bank": 14,
+  "src": 24479,
+  "dest": 34816,
+  "length": 1088,
+  "tiles": 68,
+  "screens": []
+ },
+ "8": {
+  "bank": 14,
+  "src": 30101,
+  "dest": 34816,
+  "length": 4048,
+  "tiles": 253,
+  "screens": [
+   "puzzle_worldmap"
+  ]
+ },
+ "9": {
+  "bank": 14,
+  "src": 29860,
+  "dest": 34496,
+  "length": 336,
+  "tiles": 21,
+  "screens": [
+   "level_select",
+   "gameplay",
+   "puzzle_game"
+  ]
+ },
+ "10": {
+  "bank": 13,
+  "src": 26696,
+  "dest": 34816,
+  "length": 1936,
+  "tiles": 121,
+  "screens": [
+   "puzzle_cutscene"
+  ]
+ },
+ "11": {
+  "bank": 13,
+  "src": 21877,
+  "dest": 36864,
+  "length": 1424,
+  "tiles": 89,
+  "screens": []
+ },
+ "12": {
+  "bank": 13,
+  "src": 22944,
+  "dest": 36864,
+  "length": 1536,
+  "tiles": 96,
+  "screens": []
+ },
+ "13": {
+  "bank": 13,
+  "src": 24172,
+  "dest": 36864,
+  "length": 1616,
+  "tiles": 101,
+  "screens": []
+ },
+ "14": {
+  "bank": 13,
+  "src": 25451,
+  "dest": 36864,
+  "length": 1520,
+  "tiles": 95,
+  "screens": []
+ },
+ "15": {
+  "bank": 13,
+  "src": 27597,
+  "dest": 34816,
+  "length": 3360,
+  "tiles": 210,
+  "screens": []
+ },
+ "16": {
+  "bank": 13,
+  "src": 29876,
+  "dest": 34816,
+  "length": 3360,
+  "tiles": 210,
+  "screens": []
+ },
+ "17": {
+  "bank": 12,
+  "src": 16384,
+  "dest": 36864,
+  "length": 1536,
+  "tiles": 96,
+  "screens": [
+   "puzzle_cutscene"
+  ]
+ },
+ "18": {
+  "bank": 15,
+  "src": 22496,
+  "dest": 36864,
+  "length": 1552,
+  "tiles": 97,
+  "screens": []
+ },
+ "19": {
+  "bank": 12,
+  "src": 18870,
+  "dest": 36864,
+  "length": 1504,
+  "tiles": 94,
+  "screens": []
+ },
+ "20": {
+  "bank": 12,
+  "src": 17659,
+  "dest": 36864,
+  "length": 1504,
+  "tiles": 94,
+  "screens": []
+ },
+ "21": {
+  "bank": 14,
+  "src": 27743,
+  "dest": 34816,
+  "length": 2048,
+  "tiles": 128,
+  "screens": []
+ },
+ "22": {
+  "bank": 14,
+  "src": 28819,
+  "dest": 36864,
+  "length": 2016,
+  "tiles": 126,
+  "screens": []
+ }
+}

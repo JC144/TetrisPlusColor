@@ -4,12 +4,12 @@ Boots bin/game.gb in CGB mode with symbols, provides:
   - map-load logging (hook on RenderTilemapCell: E=map id, B=row, C=col)
   - SGB dead-code asserts (bank07 $4308 / $7ec9 must never execute on CGB)
   - per-screen dump helpers (screenshot, BG tile-ID grid, shadow map, OAM)
-  - named navigation recipes to reach each screen
+
+Used by export_kit_data.py, which drives the screen walk.
 """
 
 import json
 import os
-import sys
 
 from pyboy import PyBoy
 
@@ -105,71 +105,3 @@ class Session:
 
     def stop(self):
         self.pyboy.stop(save=False)
-
-
-# ---------------------------------------------------------------------------
-# Navigation recipes. Each recipe drives a fresh Session from boot to the
-# named screen. Frame counts/button sequences discovered by explore_flow.py.
-# ---------------------------------------------------------------------------
-
-def goto_title(s):
-    # Boot -> (intro) -> title. Wait for GAME_STATE $01 with generous timeout.
-    for _ in range(40):
-        if s.state[0] == 0x01:
-            break
-        s.run(30)
-    s.run(120)  # let title settle / fade in
-
-
-def goto_mode_select(s):
-    goto_title(s)
-    s.press("start", wait=90)
-
-
-def goto_gameplay(s):
-    goto_mode_select(s)
-    # default selection -> start a 1P game; refined after discovery
-    s.press("start", wait=90)
-    for _ in range(40):
-        if s.state[0] == 0x04:
-            break
-        s.press("start", wait=60)
-    s.run(180)
-
-
-def goto_demo(s):
-    goto_title(s)
-    # idle on title until demo/attract kicks in (GAME_STATE $0a)
-    for _ in range(120):
-        if s.state[0] == 0x0A:
-            break
-        s.run(60)
-    s.run(300)
-
-
-RECIPES = {
-    "title": goto_title,
-    "mode_select": goto_mode_select,
-    "gameplay": goto_gameplay,
-    "demo": goto_demo,
-}
-
-
-def capture(name, outdir=OUT, rom=ROM):
-    s = Session(rom)
-    try:
-        RECIPES[name](s)
-        data = s.dump(name, outdir)
-        return s.map_loads, s.sgb_hits, data
-    finally:
-        s.stop()
-
-
-if __name__ == "__main__":
-    names = sys.argv[1:] or list(RECIPES)
-    for n in names:
-        loads, sgb, data = capture(n)
-        print(f"{n}: state={data['game_state']:#04x}/{data['substate']:#04x} "
-              f"map_loads={len(loads)} sgb_hits={len(sgb)}")
-        if sgb:
-            print("  !! SGB code executed:", sgb[:5])

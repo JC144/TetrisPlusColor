@@ -31,9 +31,7 @@ SAVE_ROUTES = {
     "/save-tiles": os.path.join(TOOLS, "tile_edits.json"),
 }
 REBUILD_STEPS = [
-    [sys.executable, os.path.join(TOOLS, "gen_color_data.py")],
-    [sys.executable, os.path.join(TOOLS, "gen_tile_patches.py")],
-    [os.path.join(TOOLS, "build.bat")],
+    [sys.executable, os.path.join(TOOLS, "build.py")],   # generators + RGBDS + checks
     [sys.executable, os.path.join(TOOLS, "export_kit_data.py")],
 ]
 
@@ -67,7 +65,7 @@ class Handler(SimpleHTTPRequestHandler):
             log = []
             for step in REBUILD_STEPS:
                 r = subprocess.run(step, cwd=TOOLS, capture_output=True,
-                                   text=True, shell=step[0].endswith(".bat"),
+                                   text=True,
                                    timeout=900)
                 log.append(f"$ {' '.join(os.path.basename(s) for s in step)}\n"
                            f"{r.stdout}{r.stderr}")

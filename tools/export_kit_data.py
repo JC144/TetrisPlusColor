@@ -1,10 +1,11 @@
 """Export everything the colorization studio needs into tools/kit/.
 
-Walks the known screens (same flow as verify_screens.py) while hooking the
-CHR dispatch: a VRAM snapshot at DispatchBankRoutine entry ($1c56) and another
-at GBC_ChrPatchRet (post-decompression) yield the exact bytes each CHR entry
-writes. Produces:
-  tools/kit/data.json    chr_entries (dest/length/2bpp data b64, screens),
+Walks every known screen (intro, title, options, classic and puzzle) while hooking the
+CHR dispatch (DispatchBankRoutine entry $1c56 -> GBC_ChrPatchRet) to record
+which CHR entries each screen loads, and to assert that what the game
+decompressed into VRAM equals tools/chr_codec.py's offline decode. Produces:
+  tools/kit/data.json    chr_entries (all 23: dispatch dest / decoded length /
+                         2bpp data b64 / screens using it),
                          screens (state, map, descriptor, tile grid, OAM)
   tools/kit/screens/*.png
 
@@ -16,15 +17,25 @@ import json
 import os
 
 from navigate import Session, OUT, GAME_STATE, SCREEN_SUBSTATE
+from chr_codec import CHR_TABLE, load_rom, lz_decode
 
 KIT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kit")
 VRAM0, VRAM1 = 0x8000, 0x9800
+
+# Every CHR entry decoded offline from the ROM: dest = dispatch-table VRAM
+# destination, data = full decompressed blob (tools/chr_codec.py). The studio's
+# tile indices are relative to this dest.
+_ROM = load_rom()
+CHR_ENTRIES = {}
+for _e, (_bank, _src, _dest) in CHR_TABLE.items():
+    _data = lz_decode(_ROM, _bank, _src)
+    CHR_ENTRIES[_e] = {"dest": _dest, "length": len(_data), "data": _data}
 
 
 class KitExporter:
     def __init__(self):
         self.session = s = Session()
-        self.chr_entries = {}     # id -> {dest, length, data(bytes)}
+        self.chr_entries = CHR_ENTRIES   # id -> {dest, length, data(bytes)}
         self.loads_since = []     # CHR entry ids since last checkpoint
         self.history = []         # cumulative ordered loads this session
                                   # (VRAM state = layered in this order)
@@ -34,36 +45,24 @@ class KitExporter:
         s.pyboy.hook_register(None, "GBC_ChrPatchRet", self._chr_end, None)
 
     def _chr_begin(self, _):
-        m = self.session.pyboy.memory
-        self._before = (self.session.pyboy.register_file.A,
-                        bytes(m[VRAM0:VRAM1]))
+        self._before = self.session.pyboy.register_file.A   # entry id
 
     def _chr_end(self, _):
         if self._before is None:
             return
-        entry, before = self._before
+        entry = self._before
         self._before = None
         m = self.session.pyboy.memory
         after = bytes(m[VRAM0:VRAM1])
-        diff = [i for i in range(len(before)) if before[i] != after[i]]
-        if not diff:
-            # data identical to what was already in VRAM; use known prior info
-            if entry in self.chr_entries:
-                self.loads_since.append(entry)
-                self.history.append(entry)
-            return
-        # align to the 16-byte tile grid: the studio decodes tiles from dest,
-        # so a diff starting mid-tile would shift every tile's bytes
-        start, end = diff[0] & ~0xF, (diff[-1] + 16) & ~0xF
-        info = self.chr_entries.get(entry)
-        if info:  # extend the known range (idempotent reloads may differ less)
-            start = min(start, info["dest"] - VRAM0)
-            end = max(end, info["dest"] - VRAM0 + info["length"])
-        self.chr_entries[entry] = {
-            "dest": VRAM0 + start,
-            "length": end - start,
-            "data": after[start:end],
-        }
+        # Cross-check the emulator against the offline codec: the bytes the
+        # game just decompressed must equal chr_codec's decode of the same
+        # entry (the hook runs before Bank10_ApplyChrPatches, so VRAM still
+        # holds the pristine original tiles here).
+        info = CHR_ENTRIES[entry]
+        start = info["dest"] - VRAM0
+        got = after[start:start + info["length"]]
+        assert got == info["data"], \
+            f"CHR entry {entry}: VRAM after load differs from chr_codec decode"
         self.loads_since.append(entry)
         self.history.append(entry)
 

@@ -19,5 +19,7 @@
   "05:6896": "CONTINUE screen (bank05 second handler): accept A as well as Start to continue (and $08 -> and $09)",
   "05:68a8": "CONTINUE screen (bank05 second handler): counter decrement moved from A to B (and $01 -> and $02)",
   "05:42ba": "puzzle menus (GAME_STATE $05) substate table relocated to GBC_PuzzleMenuTable ($42c9 -> bank05 menu-back island) to add the B=back substates ss$19/ss$1a",
-  "05:5584": "SELECT MODE (GAME_STATE $02) substate table relocated to GBC_SelectModeTable ($5593 -> bank05 menu-back island) to add the B=back substates ss$0c/ss$0d"
+  "05:5584": "SELECT MODE (GAME_STATE $02) substate table relocated to GBC_SelectModeTable ($5593 -> bank05 menu-back island) to add the B=back substates ss$0c/ss$0d",
+  "00:1f2b": "Call_000_1f2a: sprite gfx table bank $0a -> $11 (BANK_SPRITE_GFX; bank $11 = copy of the bank $0a table generated from tools/gfx/sprites/*.png by tools/gen_sprite_gfx.py, so sprite animations can be redrawn)",
+  "00:1fa1": "Call_000_1fa0: sprite gfx streaming continuation, bank $0a -> $11 (see $1f2b)"
 }

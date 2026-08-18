@@ -1,0 +1,2469 @@
+[
+ {
+  "id": 0,
+  "addr": 21354,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 0,
+    "gfx": 0,
+    "slot": 0,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 0,
+    "gfx": 1,
+    "slot": 20,
+    "meta": 17
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 1,
+  "addr": 21366,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 1,
+    "gfx": 80,
+    "slot": 40,
+    "meta": 192
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 2,
+  "addr": 21373,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 97
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 98
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 99
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 100
+   },
+   {
+    "op": "frame",
+    "delay": 60,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 101
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 102
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 103
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 104
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 130,
+    "slot": 1,
+    "meta": 105
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 3,
+  "addr": 21420,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 96,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 97,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 4,
+  "addr": 21432,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 100,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 101,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 5,
+  "addr": 21444,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 98,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 99,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 6,
+  "addr": 21456,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 114,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 115,
+    "slot": 60,
+    "meta": 117
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 7,
+  "addr": 21468,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 106,
+    "slot": 64,
+    "meta": 118
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 107,
+    "slot": 64,
+    "meta": 118
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 8,
+  "addr": 21480,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 2,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 9,
+  "addr": 21487,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 2,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 10,
+  "addr": 21494,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 1,
+    "gfx": 128,
+    "slot": 68,
+    "meta": 111
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 11,
+  "addr": 21501,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 1,
+    "gfx": 129,
+    "slot": 68,
+    "meta": 111
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 12,
+  "addr": 21508,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 108,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 109,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 13,
+  "addr": 21520,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 102,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 103,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 14,
+  "addr": 21532,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 122,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 123,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 15,
+  "addr": 21544,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 124,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 125,
+    "slot": 40,
+    "meta": 112
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 16,
+  "addr": 21556,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 116,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 117,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 17,
+  "addr": 21568,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 110,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 111,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 18,
+  "addr": 21580,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 118,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 119,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 19,
+  "addr": 21592,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 126,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 127,
+    "slot": 44,
+    "meta": 113
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 20,
+  "addr": 21604,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 116,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 117,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 21,
+  "addr": 21616,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 110,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 111,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 22,
+  "addr": 21628,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 118,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 119,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 23,
+  "addr": 21640,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 126,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 127,
+    "slot": 48,
+    "meta": 114
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 24,
+  "addr": 21652,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 104,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 105,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 25,
+  "addr": 21664,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 106,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 107,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 26,
+  "addr": 21676,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 112,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 113,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 27,
+  "addr": 21688,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 120,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 121,
+    "slot": 52,
+    "meta": 115
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 28,
+  "addr": 21700,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 96,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 97,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 29,
+  "addr": 21712,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 100,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 101,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 30,
+  "addr": 21724,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 98,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 99,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 31,
+  "addr": 21736,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 114,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 115,
+    "slot": 56,
+    "meta": 116
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 32,
+  "addr": 21748,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 0,
+    "slot": 21,
+    "meta": 1
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 33,
+  "addr": 21755,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 0,
+    "slot": 21,
+    "meta": 1
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 1,
+    "slot": 21,
+    "meta": 3
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 2,
+    "slot": 21,
+    "meta": 3
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 34,
+  "addr": 21772,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 3,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 4,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 5,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 35,
+  "addr": 21789,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 30,
+    "gfx": 6,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 30,
+    "gfx": 7,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 30,
+    "gfx": 6,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 30,
+    "gfx": 8,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 36,
+  "addr": 21811,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 37,
+  "addr": 21833,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 38,
+  "addr": 21855,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 40,
+    "gfx": 12,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 40,
+    "gfx": 13,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 39,
+  "addr": 21867,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 40,
+    "gfx": 12,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 40,
+    "gfx": 13,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 40,
+  "addr": 21879,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 14,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 15,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 41,
+  "addr": 21891,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 14,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 15,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 42,
+  "addr": 21903,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 30,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 43,
+  "addr": 21910,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 30,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 44,
+  "addr": 21917,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 28,
+    "slot": 1,
+    "meta": 6
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 21,
+    "meta": 1
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 45,
+  "addr": 21929,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 28,
+    "slot": 1,
+    "meta": 8
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 21,
+    "meta": 5
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 46,
+  "addr": 21941,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 31,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 32,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 47,
+  "addr": 21953,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 31,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 32,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 48,
+  "addr": 21965,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 29,
+    "slot": 21,
+    "meta": 1
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 49,
+  "addr": 21972,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 29,
+    "slot": 21,
+    "meta": 5
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 50,
+  "addr": 21979,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 23,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 24,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 25,
+    "slot": 21,
+    "meta": 11
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 51,
+  "addr": 21996,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 23,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 24,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 25,
+    "slot": 21,
+    "meta": 13
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 52,
+  "addr": 22013,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 26,
+    "slot": 21,
+    "meta": 11
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 53,
+  "addr": 22020,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 26,
+    "slot": 21,
+    "meta": 13
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 54,
+  "addr": 22027,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 14,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 15,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 55,
+  "addr": 22039,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 14,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 15,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 56,
+  "addr": 22051,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 60,
+    "gfx": 19,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 20,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 21,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "jump",
+    "to": 1
+   }
+  ]
+ },
+ {
+  "id": 57,
+  "addr": 22068,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 60,
+    "gfx": 19,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 20,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 21,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "jump",
+    "to": 1
+   }
+  ]
+ },
+ {
+  "id": 58,
+  "addr": 22085,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 21,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 22,
+    "slot": 21,
+    "meta": 18
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 59,
+  "addr": 22097,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 21,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 22,
+    "slot": 21,
+    "meta": 19
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 60,
+  "addr": 22109,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 16,
+    "slot": 21,
+    "meta": 22
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 17,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 18,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "jump",
+    "to": 1
+   }
+  ]
+ },
+ {
+  "id": 61,
+  "addr": 22126,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 16,
+    "slot": 21,
+    "meta": 23
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 17,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 18,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "jump",
+    "to": 1
+   }
+  ]
+ },
+ {
+  "id": 62,
+  "addr": 22143,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 12,
+    "gfx": 36,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 37,
+    "slot": 21,
+    "meta": 26
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 63,
+  "addr": 22155,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 12,
+    "gfx": 36,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 37,
+    "slot": 21,
+    "meta": 27
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 64,
+  "addr": 22167,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 24,
+    "gfx": 38,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 24,
+    "gfx": 39,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 24,
+    "gfx": 40,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 60,
+    "gfx": 41,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 65,
+  "addr": 22189,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 24,
+    "gfx": 38,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 24,
+    "gfx": 39,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 24,
+    "gfx": 40,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 60,
+    "gfx": 41,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 66,
+  "addr": 22211,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 33,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 34,
+    "slot": 21,
+    "meta": 29
+   },
+   {
+    "op": "frame",
+    "delay": 120,
+    "gfx": 35,
+    "slot": 21,
+    "meta": 33
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 67,
+  "addr": 22228,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 33,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 34,
+    "slot": 21,
+    "meta": 31
+   },
+   {
+    "op": "frame",
+    "delay": 120,
+    "gfx": 35,
+    "slot": 21,
+    "meta": 35
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 68,
+  "addr": 22245,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 25,
+    "slot": 21,
+    "meta": 11
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 24,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 23,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 69,
+  "addr": 22262,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 25,
+    "slot": 21,
+    "meta": 13
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 24,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 23,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 70,
+  "addr": 22279,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 71,
+  "addr": 22286,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 72,
+  "addr": 22293,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 26,
+    "slot": 1,
+    "meta": 10
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 73,
+  "addr": 22300,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 26,
+    "slot": 1,
+    "meta": 12
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 74,
+  "addr": 22307,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 29,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 75,
+  "addr": 22314,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 29,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 76,
+  "addr": 22321,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 77,
+  "addr": 22328,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 78,
+  "addr": 22335,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 79,
+  "addr": 22357,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 80,
+  "addr": 22379,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 42,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 43,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 44,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 81,
+  "addr": 22396,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 82,
+  "addr": 22418,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 25
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 83,
+  "addr": 22440,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 47,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 48,
+    "slot": 21,
+    "meta": 43
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 49,
+    "slot": 21,
+    "meta": 43
+   },
+   {
+    "op": "jump",
+    "to": 1
+   }
+  ]
+ },
+ {
+  "id": 84,
+  "addr": 22457,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 50,
+    "slot": 1,
+    "meta": 1
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 51,
+    "slot": 1,
+    "meta": 20
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 52,
+    "slot": 21,
+    "meta": 41
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 51,
+    "slot": 1,
+    "meta": 20
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 52,
+    "slot": 21,
+    "meta": 41
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 53,
+    "slot": 1,
+    "meta": 42
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 54,
+    "slot": 21,
+    "meta": 37
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 55,
+    "slot": 21,
+    "meta": 37
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 54,
+    "slot": 21,
+    "meta": 37
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 55,
+    "slot": 21,
+    "meta": 37
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 54,
+    "slot": 21,
+    "meta": 37
+   },
+   {
+    "op": "frame",
+    "delay": 16,
+    "gfx": 55,
+    "slot": 21,
+    "meta": 37
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 85,
+  "addr": 22519,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 86,
+  "addr": 22526,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 27,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 87,
+  "addr": 22533,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 29,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 88,
+  "addr": 22540,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 29,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 89,
+  "addr": 22547,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 0
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 90,
+  "addr": 22569,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 9,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 11,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "frame",
+    "delay": 4,
+    "gfx": 10,
+    "slot": 1,
+    "meta": 4
+   },
+   {
+    "op": "jump",
+    "to": 0
+   }
+  ]
+ },
+ {
+  "id": 91,
+  "addr": 22591,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 32,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "end"
+   }
+  ]
+ },
+ {
+  "id": 92,
+  "addr": 22633,
+  "ops": [
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 45,
+    "slot": 1,
+    "meta": 24
+   },
+   {
+    "op": "frame",
+    "delay": 8,
+    "gfx": 46,
+    "slot": 21,
+    "meta": 44
+   },
+   {
+    "op": "end"
+   }
+  ]
+ }
+]

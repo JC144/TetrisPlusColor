@@ -94,6 +94,12 @@ DEF wChrStaging          EQU $d300
 DEF wBGAttrLUT           EQU $ce00  ; 256 bytes page-aligned: tile-ID -> BG attribute
 DEF wOBJPalLUT           EQU $cf00  ; 256 bytes page-aligned: tile-ID -> OBJ palette (0-3)
 
+; ROM bank holding the sprite graphics table read by the animation
+; interpreter (Call_000_1f2a / Call_000_1fa0). Originally $0a; the GBC build
+; uses a copy in bank $11 generated from tools/gfx/sprites/*.png
+; (tools/gen_sprite_gfx.py) so sprite animations can be redrawn.
+DEF BANK_SPRITE_GFX      EQU $11
+
 
 ; ============================================================================
 ; ROM Data Table Labels (to be added incrementally)

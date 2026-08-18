@@ -566,7 +566,8 @@ Jump_000_1f18:
 
 
 Call_000_1f2a:
-    ld a, $0a
+    ld a, BANK_SPRITE_GFX       ; was: ld a,$0a (sprite gfx table relocated to
+                                ; bank $11, generated from tools/gfx/sprites)
     rst $10
     ld hl, $4000
     ld c, d
@@ -652,7 +653,7 @@ jr_000_1f9c:
 
 
 Call_000_1fa0:
-    ld a, $0a
+    ld a, BANK_SPRITE_GFX       ; was: ld a,$0a (see Call_000_1f2a)
     rst $10
     push de
     ld hl, $000c

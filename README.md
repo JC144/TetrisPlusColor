@@ -34,6 +34,6 @@ The big part was done, the game still needed some little fixes to be nice to pla
 I'm proud of the result and I enjoyed it a lot!
 
 ## Contribution
-If you want to contribute and modify some levels, there are already some tools available in the ./tools folder.
+If you want to contribute and modify some levels, there are already some tools available in the ./tools folder — see [tools/README.md](tools/README.md) for the build, the colorization studio and the graphics export/import scripts.
 
 Feel free to open a PR. Sadly, I've always struggled to draw things and I'm not good with colors.

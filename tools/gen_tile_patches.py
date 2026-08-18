@@ -5,7 +5,7 @@ tile_edits.json schema (written by the studio UI):
   "patches": {
     "<chr_entry_id>": {            // dispatch entry 0-22, as decimal string
       "<tile_index>": [64 ints]    // 0-3 gray levels, row-major 8x8,
-    }                              // index relative to the entry's VRAM dest
+    }                              // index relative to the entry's dispatch VRAM dest
   },
   "remaps": {                      // per-cell tile-id remaps (screen view
     "<map_id>": {                  // "Replace with..."), RLE map id as
@@ -16,8 +16,8 @@ tile_edits.json schema (written by the studio UI):
 
 Emits ChrPatchTable (23 pointers) + per-entry patch lists:
   db count, then count * [dest_lo, dest_hi, 16 bytes 2bpp].
-VRAM dest = CHR_TABLE[entry].dest + tile_index*16 (cross-checked against
-tools/kit/data.json sizes when that file exists).
+VRAM dest = CHR_TABLE[entry].dest + tile_index*16 (tile_index checked against
+the entry's decoded length, see chr_codec.py).
 Also emits MapRemapTable, applied to the $d000 tilemap shadow right after a
 map is decompressed: db map_id, count, count * [row, col, tile_id], ...,
 terminated by db $FF.
@@ -26,60 +26,28 @@ terminated by db $FF.
 import json
 import os
 
+from chr_codec import CHR_TABLE, NUM_ENTRIES, encode_2bpp, load_rom, lz_decode
+
 TOOLS = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(TOOLS)
 EDITS_PATH = os.path.join(TOOLS, "tile_edits.json")
 DATA_PATH = os.path.join(TOOLS, "kit", "data.json")
 OUT_PATH = os.path.join(ROOT, "src", "extensions", "tile_patches.inc")
-
-# Dispatch table at ROM0 $1c73: entry id -> (bank, src, vram_dest).
-# Extracted from the ROM; the kit export verifies these empirically.
-CHR_TABLE = {
-    0:  (0x0D, 0x4000, 0x8800),
-    1:  (0x0D, 0x489D, 0x8800),
-    2:  (0x0E, 0x5A40, 0x8800),
-    3:  (0x0E, 0x6202, 0x8800),
-    4:  (0x0E, 0x6AAC, 0x8000),
-    5:  (0x0D, 0x4E78, 0x8800),
-    6:  (0x0E, 0x5A40, 0x8000),
-    7:  (0x0E, 0x5F9F, 0x8800),
-    8:  (0x0E, 0x7595, 0x8800),
-    9:  (0x0E, 0x74A4, 0x86C0),
-    10: (0x0D, 0x6848, 0x8800),
-    11: (0x0D, 0x5575, 0x9000),
-    12: (0x0D, 0x59A0, 0x9000),
-    13: (0x0D, 0x5E6C, 0x9000),
-    14: (0x0D, 0x636B, 0x9000),
-    15: (0x0D, 0x6BCD, 0x8800),
-    16: (0x0D, 0x74B4, 0x8800),
-    17: (0x0C, 0x4000, 0x9000),
-    18: (0x0F, 0x57E0, 0x9000),
-    19: (0x0C, 0x49B6, 0x9000),
-    20: (0x0C, 0x44FB, 0x9000),
-    21: (0x0E, 0x6C5F, 0x8800),
-    22: (0x0E, 0x7093, 0x9000),
-}
-NUM_ENTRIES = 23
-
-
-def encode_2bpp(levels):
-    """64 gray levels (0=lightest..3=darkest) -> 16 bytes GB 2bpp."""
-    assert len(levels) == 64 and all(0 <= v <= 3 for v in levels), "bad tile data"
-    out = []
-    for y in range(8):
-        lo = hi = 0
-        for x in range(8):
-            v = levels[y * 8 + x]
-            lo |= (v & 1) << (7 - x)
-            hi |= ((v >> 1) & 1) << (7 - x)
-        out += [lo, hi]
-    return out
+# Any ROM with the original graphics banks works for measuring entry lengths.
+ROM_PATHS = [os.path.join(ROOT, "bin", "game.gb"),
+             os.path.join(ROOT, "bin", "Tetris Plus (USA, Europe) (SGB Enhanced).gb")]
 
 
 def entry_geometry():
-    """Empirical (dest, length) per entry from the kit export. The studio's
-    tile indices are relative to THESE dests, which can differ from the
-    dispatch-table base when the load's first bytes matched existing VRAM."""
+    """(dest, length) per entry: dispatch-table VRAM dest + decoded length,
+    from the built ROM when available (tools/chr_codec.py), else from the kit
+    export (which records the same values). Tile indices in tile_edits.json
+    are relative to this dest."""
+    for path in ROM_PATHS:
+        if os.path.isfile(path):
+            rom = load_rom(path)
+            return {e: (dest, len(lz_decode(rom, bank, src)))
+                    for e, (bank, src, dest) in CHR_TABLE.items()}
     if not os.path.isfile(DATA_PATH):
         return {}
     with open(DATA_PATH) as f:
@@ -108,6 +76,7 @@ def main():
         if not patches:
             pointers.append("$0000")
             continue
+        assert len(patches) <= 255,             f"entry {entry}: {len(patches)} patched tiles, max 255 (1-byte count)"
         label = f"ChrPatches_{entry:02d}"
         pointers.append(label)
         body = [f"{label}:", f"    db {len(patches)}"]

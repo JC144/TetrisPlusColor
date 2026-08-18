@@ -7,7 +7,7 @@ against the committed reference (tools/rom_hashes.json).
 Banks fall into two classes:
   - FROZEN: never touched by the colorization work. Any drift is a build
     error (something shifted or was edited by accident).
-  - ACTIVE (00, 01, 05, 10): legitimately modified banks. Drift is reported
+  - ACTIVE (00, 01, 05, 10, 11): legitimately modified banks. Drift is reported
     as info only; run with --update after an intentional change to re-pin.
 
 Usage:
@@ -25,7 +25,7 @@ ROM_PATH = TOOLS_DIR.parent / "bin" / "game.gb"
 HASHES_PATH = TOOLS_DIR / "rom_hashes.json"
 
 BANK_SIZE = 0x4000
-ACTIVE_BANKS = {0x00, 0x01, 0x05, 0x10}  # banks the GBC work is allowed to change
+ACTIVE_BANKS = {0x00, 0x01, 0x05, 0x10, 0x11}  # banks the GBC work is allowed to change
 
 
 def bank_hashes(rom_path):

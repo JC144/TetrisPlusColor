@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Colorization Studio — Tetris Plus GBC</title>
+<style>
+  :root { --bg:#1b1e26; --panel:#262a35; --line:#3a3f4e; --txt:#e8eaf0; --dim:#9aa0b0; --acc:#5b9dd9; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--txt); font:14px/1.5 system-ui,sans-serif; }
+  header { display:flex; align-items:center; gap:16px; padding:10px 16px; background:var(--panel); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:5; }
+  header h1 { font-size:16px; margin:0 16px 0 0; }
+  nav button { background:none; border:none; color:var(--dim); font-size:14px; padding:6px 12px; cursor:pointer; border-radius:6px; }
+  nav button.active { background:var(--acc); color:#fff; }
+  .btn.mode.active { background:var(--acc); }
+  .shot img { cursor:pointer; }
+  .swatch { display:inline-flex; flex-direction:column; align-items:center; gap:2px;
+            margin-right:6px; cursor:pointer; padding:3px; border:2px solid transparent;
+            border-radius:6px; }
+  .swatch.current { border-color:var(--acc); }
+  .swatch .strip { display:flex; border:1px solid var(--line); border-radius:3px; overflow:hidden; }
+  .swatch .strip i { width:13px; height:18px; display:block; }
+  .swatch small { color:var(--dim); font:10px monospace; }
+  .spacer { flex:1; }
+  .btn { background:var(--acc); border:none; color:#fff; padding:7px 14px; border-radius:6px; cursor:pointer; font-size:13px; }
+  .btn.gray { background:#4a4f60; }
+  .btn.gray.active { background:var(--acc); }
+  .btn:disabled { opacity:.5; cursor:wait; }
+  main { padding:16px; }
+  .hidden { display:none !important; }
+  /* gallery */
+  .cards { display:flex; flex-wrap:wrap; gap:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px; }
+  .card h3 { margin:0 0 6px; font-size:13px; }
+  .card .meta { color:var(--dim); font-size:12px; }
+  .shot { position:relative; width:320px; height:288px; }
+  .shot img { width:320px; height:288px; image-rendering:pixelated; display:block; border-radius:4px; }
+  .shot .hover { position:absolute; left:0; right:0; bottom:0; background:rgba(0,0,0,.75); color:#fff; font:11px monospace; padding:2px 6px; pointer-events:none; }
+  /* palettes */
+  .row { display:flex; gap:24px; flex-wrap:wrap; align-items:flex-start; }
+  .palbox { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:12px; }
+  .palbox h3 { margin:0 0 8px; font-size:13px; }
+  .palrow { display:flex; align-items:center; gap:6px; margin:3px 0; }
+  .palrow span { width:24px; color:var(--dim); font:11px monospace; }
+  .palrow input[type=color] { width:42px; height:28px; border:1px solid var(--line); border-radius:4px; background:none; padding:1px; cursor:pointer; }
+  table.lut { border-collapse:collapse; font:12px monospace; }
+  table.lut td, table.lut th { border:1px solid var(--line); padding:3px 8px; }
+  table.lut input { width:52px; background:var(--bg); color:var(--txt); border:1px solid var(--line); border-radius:3px; font:12px monospace; padding:2px 4px; }
+  select { background:var(--panel); color:var(--txt); border:1px solid var(--line); border-radius:5px; padding:5px 8px; font-size:13px; }
+  /* pixel editor */
+  #sheet { image-rendering:pixelated; border:1px solid var(--line); border-radius:4px; cursor:crosshair; }
+  #edit { image-rendering:pixelated; border:1px solid var(--line); border-radius:4px; cursor:crosshair; }
+  .tools { display:flex; gap:8px; align-items:center; margin:8px 0; flex-wrap:wrap; }
+  .hint { color:var(--dim); font-size:12px; }
+  #log { white-space:pre-wrap; font:11px monospace; background:#11131a; border:1px solid var(--line); border-radius:6px; padding:10px; max-height:240px; overflow:auto; margin-top:12px; }
+  .toast { position:fixed; bottom:16px; right:16px; background:var(--acc); color:#fff; padding:10px 16px; border-radius:8px; opacity:0; transition:opacity .3s; z-index:10; }
+  .toast.show { opacity:1; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎨 Tetris Plus GBC</h1>
+  <nav>
+    <button data-tab="screens" class="active">Screens</button>
+    <button data-tab="palettes">Palettes</button>
+    <button data-tab="pixels">Pixels</button>
+  </nav>
+  <div class="spacer"></div>
+  <button class="btn gray" id="saveBtn">💾 Save</button>
+  <button class="btn" id="rebuildBtn">🔨 Rebuild + captures</button>
+</header>
+<main>
+  <section id="tab-screens"><div class="cards" id="cards"></div></section>
+
+  <section id="tab-palettes" class="hidden">
+    <div class="tools">
+      Descriptor: <select id="descSel"></select>
+      <span class="hint">4 colors per palette, from light (0) to dark (3). Ranges map tile IDs to palettes.</span>
+    </div>
+    <div class="row">
+      <div class="palbox"><h3>BG palettes</h3><div id="bgPals"></div></div>
+      <div class="palbox"><h3>OBJ palettes (sprites)</h3><div id="objPals"></div></div>
+      <div class="palbox"><h3>BG ranges: tile → palette</h3>
+        <table class="lut"><thead><tr><th>from</th><th>to</th><th>palette</th><th></th></tr></thead><tbody id="bgRanges"></tbody></table>
+        <div class="tools">default <input id="bgDefault" style="width:40px"> <button class="btn gray" id="addBgRange">+ range</button></div>
+        <h3 style="margin-top:14px">OBJ ranges: sprite tile → palette</h3>
+        <table class="lut"><thead><tr><th>from</th><th>to</th><th>palette</th><th></th></tr></thead><tbody id="objRanges"></tbody></table>
+        <div class="tools">default <input id="objDefault" style="width:40px"> <button class="btn gray" id="addObjRange">+ range</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-pixels" class="hidden">
+    <div class="tools">
+      <button class="btn gray mode" id="modeScreen">🖼 Screen view</button>
+      <button class="btn gray mode" id="modeSheet">▦ Sheet view</button>
+      <span id="screenTools">Screen: <select id="scrSel"></select>
+        <label class="hint"><input type="checkbox" id="showSprites" checked> sprites</label></span>
+      <span id="sheetTools">CHR tileset: <select id="chrSel"></select>
+        Preview with: <select id="prevDesc"></select> palette <select id="prevPal"></select></span>
+    </div>
+    <div class="tools"><span class="hint" id="chrInfo"></span></div>
+    <div class="tools" id="palStrip">
+      <span class="hint">Tile palette:</span>
+      <span id="palSwatches"></span>
+      <span class="hint" id="palStripInfo"></span>
+    </div>
+    <div class="row">
+      <div>
+        <canvas id="sheet"></canvas>
+        <div class="hint">Click a tile to edit it. Red = edited pixels · orange = remapped cell · blue = selection.</div>
+      </div>
+      <div>
+        <canvas id="edit" width="192" height="192"></canvas>
+        <div class="tools">
+          <span id="editInfo" class="hint">—</span>
+          <button class="btn gray" id="resetTile">↩ Reset tile</button>
+          <button class="btn gray" id="replaceTile">⎘ Replace with…</button>
+        </div>
+        <div class="hint">Left click: level +1 · Right click: level −1 (0=light … 3=dark)</div>
+      </div>
+    </div>
+  </section>
+  <div id="log" class="hidden"></div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+let DATA=null, COLORS=null, EDITS=null;
+let curDesc=null, curChr=null, curTile=null;
+let pixMode='sheet', curScreen=null, curCell=null; // curCell={cx,cy} in screen view
+let pickTarget=null; // replace-with mode: {mode:'pixels',chr,tile} (sheet view,
+                     // overwrites the tile's pixels) or {mode:'cell',screen,map,
+                     // cx,cy} (screen view, remaps just that tilemap cell)
+
+const $=s=>document.querySelector(s);
+const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1800);};
+const b64=s=>{const r=atob(s),a=new Uint8Array(r.length);for(let i=0;i<r.length;i++)a[i]=r.charCodeAt(i);return a;};
+
+function tileLevels(bytes,t){ // 16 bytes/tile -> 64 levels
+  const out=new Array(64);
+  for(let y=0;y<8;y++){const lo=bytes[t*16+2*y],hi=bytes[t*16+2*y+1];
+    for(let x=0;x<8;x++){const b=7-x;out[y*8+x]=((lo>>b)&1)|(((hi>>b)&1)<<1);}}
+  return out;
+}
+function lutAttr(lut,id){let a=lut.default||0;for(const[f,l,p]of lut.ranges||[]){if(id>=f&&id<=l)a=p;}return a;}
+function palColors(desc,kind){ // -> array of 8 palettes (padded)
+  let p=(COLORS.descriptors[desc]?.[kind]||[['#FFFFFF','#A5A5A5','#525252','#000000']]).slice();
+  while(p.length<8)p.push(p[p.length-1]); return p;
+}
+function bgTileId(addr){ // VRAM addr -> BG tile id ($8800 mode), or null
+  if(addr>=0x9000&&addr<0x9800)return (addr-0x9000)>>4;
+  if(addr>=0x8800)return 0x80+((addr-0x8800)>>4);
+  return null;
+}
+function resolveAddr(screenName,addr){ // VRAM addr -> {entry,index} via the session's
+  const sc=DATA.screens[screenName];if(!sc)return null;   // cumulative CHR loads
+  let hit=null;
+  for(const e of (sc.chr_history||sc.chr_entries)){ // load order: last covering wins
+    const info=DATA.chr_entries[String(e)];if(!info)continue;
+    if(addr>=info.dest&&addr<info.dest+info.length)hit={entry:String(e),index:(addr-info.dest)>>4};
+  }
+  return hit;
+}
+function resolveTile(screenName,tileId){ // BG tile id -> {entry,index}
+  const addr=tileId<0x80?0x9000+tileId*16:0x8800+(tileId-0x80)*16;
+  return resolveAddr(screenName,addr);
+}
+function remapsFor(sc){ // per-cell remaps of a screen's map ("cy,cx" -> tile id)
+  return sc&&sc.map_id!=null&&EDITS.remaps[String(sc.map_id)]||{};
+}
+function effTileId(sc,cx,cy){ // tile id a cell shows, remap applied
+  const r=remapsFor(sc)[cy+','+cx];
+  return r!==undefined?r:sc.bg_tiles[cy][cx];
+}
+
+/* ---------- tabs ---------- */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
+  for(const t of ['screens','palettes','pixels'])$('#tab-'+t).classList.toggle('hidden',b.dataset.tab!==t);
+  if(b.dataset.tab==='palettes'&&COLORS)renderPalForm(); // reflect Pixels-tab assignments
+});
+
+/* ---------- screens gallery ---------- */
+function renderScreens(){
+  const c=$('#cards');c.innerHTML='';
+  for(const[name,sc]of Object.entries(DATA.screens)){
+    const card=document.createElement('div');card.className='card';
+    const map=sc.map_id!=null?'$'+sc.map_id.toString(16).padStart(2,'0'):'—';
+    card.innerHTML=`<h3>${name}</h3>
+      <div class="shot"><img src="screens/${name}.png?${Date.now()}"><div class="hover"></div></div>
+      <div class="meta">descriptor <b>${sc.descriptor}</b> · map ${map} · CHR [${sc.chr_entries.join(', ')}] · ${sc.oam.length} sprite(s)</div>`;
+    const img=card.querySelector('img'),hov=card.querySelector('.hover');
+    img.onmousemove=e=>{
+      const r=img.getBoundingClientRect();
+      const cx=Math.min(19,Math.max(0,Math.floor((e.clientX-r.left)/16)));
+      const cy=Math.min(17,Math.max(0,Math.floor((e.clientY-r.top)/16)));
+      const orig=sc.bg_tiles[cy][cx],id=effTileId(sc,cx,cy);
+      const lut=COLORS.descriptors[sc.descriptor]?.bg_lut||{default:0,ranges:[]};
+      const rm=id!==orig?` (remap of $${orig.toString(16).padStart(2,'0')})`:'';
+      hov.textContent=`(${cx},${cy}) tile $${id.toString(16).padStart(2,'0')}${rm} → palette ${lutAttr(lut,id)}`;
+    };
+    img.onmouseleave=()=>hov.textContent='';
+    img.onclick=()=>openScreenInPixels(name);
+    img.title='Click to edit this screen\'s pixels';
+    c.appendChild(card);
+  }
+}
+
+/* ---------- palette editor ---------- */
+function renderPalForm(){
+  const d=COLORS.descriptors[curDesc];
+  const mk=(host,kind)=>{
+    const el=$(host);el.innerHTML='';
+    const pals=d[kind]||[];
+    for(let i=0;i<8;i++){
+      const p=pals[i]||pals[pals.length-1]||['#FFFFFF','#A5A5A5','#525252','#000000'];
+      const row=document.createElement('div');row.className='palrow';
+      row.innerHTML=`<span>${i}</span>`+p.map((c,j)=>`<input type="color" value="${c}" data-kind="${kind}" data-pal="${i}" data-slot="${j}">`).join('');
+      el.appendChild(row);
+    }
+    el.querySelectorAll('input').forEach(inp=>inp.oninput=()=>{
+      const k=inp.dataset.kind,pi=+inp.dataset.pal,sl=+inp.dataset.slot;
+      while(d[k].length<=pi)d[k].push([...d[k][d[k].length-1]]);
+      d[k][pi][sl]=inp.value.toUpperCase();
+      if(curChr!==null)renderActive();
+    });
+  };
+  mk('#bgPals','bg_palettes');mk('#objPals','obj_palettes');
+  const mkRanges=(tbody,lutKey,defInput)=>{
+    const lut=d[lutKey]||(d[lutKey]={default:0,ranges:[]});
+    const tb=$(tbody);tb.innerHTML='';
+    (lut.ranges||[]).forEach((rg,i)=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML=rg.map((v,j)=>`<td><input value="${j<2?'$'+v.toString(16).padStart(2,'0'):v}" data-i="${i}" data-j="${j}"></td>`).join('')+`<td><button class="btn gray" data-del="${i}">✕</button></td>`;
+      tb.appendChild(tr);
+    });
+    tb.querySelectorAll('input').forEach(inp=>inp.onchange=()=>{
+      const v=parseInt(inp.value.replace('$','0x'));if(isNaN(v))return toast('invalid value');
+      lut.ranges[+inp.dataset.i][+inp.dataset.j]=v;renderScreens();
+    });
+    tb.querySelectorAll('button').forEach(b=>b.onclick=()=>{lut.ranges.splice(+b.dataset.del,1);renderPalForm();});
+    const di=$(defInput);di.value=lut.default||0;
+    di.onchange=()=>{lut.default=parseInt(di.value)||0;};
+  };
+  mkRanges('#bgRanges','bg_lut','#bgDefault');
+  mkRanges('#objRanges','obj_lut','#objDefault');
+}
+
+/* ---------- pixel editor ---------- */
+const _chrCache={};
+function chrBytesFor(id){ // entry data with edits applied (cached per render pass)
+  if(_chrCache[id])return _chrCache[id];
+  const e=DATA.chr_entries[id];
+  const bytes=b64(e.data_b64).slice();
+  const edits=(EDITS.patches[id]||{});
+  for(const[ti,levels]of Object.entries(edits)){
+    const t=+ti;
+    for(let y=0;y<8;y++){let lo=0,hi=0;
+      for(let x=0;x<8;x++){const v=levels[y*8+x];lo|=(v&1)<<(7-x);hi|=((v>>1)&1)<<(7-x);}
+      bytes[t*16+2*y]=lo;bytes[t*16+2*y+1]=hi;}
+  }
+  return _chrCache[id]=bytes;
+}
+function chrBytes(){return chrBytesFor(curChr);}
+function invalidateChr(){for(const k of Object.keys(_chrCache))delete _chrCache[k];}
+let lastCellId=null; // BG tile id of the last cell picked in screen view
+function previewPal(){
+  const pals=palColors($('#prevDesc').value,'bg_palettes');
+  return pals[+$('#prevPal').value]||pals[0];
+}
+function editPal(){ // palette used by the 8x8 editor preview
+  if(pixMode==='screen'&&curScreen&&lastCellId!==null){
+    const desc=DATA.screens[curScreen].descriptor;
+    const lut=COLORS.descriptors[desc]?.bg_lut||{default:0,ranges:[]};
+    return palColors(desc,'bg_palettes')[lutAttr(lut,lastCellId)&7];
+  }
+  return previewPal();
+}
+function renderActive(){
+  if(pixMode==='screen')renderScreenView();else renderSheet();
+  renderEdit();
+  renderPalStrip();
+}
+function activeDescName(){ // descriptor whose bg_lut the palette strip edits
+  return pixMode==='screen'&&curScreen?DATA.screens[curScreen].descriptor:$('#prevDesc').value;
+}
+function selectedBgId(){ // BG tile id of the selected tile, or null
+  if(curTile===null||curChr===null)return null;
+  if(pixMode==='screen')return lastCellId;
+  return bgTileId(DATA.chr_entries[curChr].dest+curTile*16);
+}
+function setTilePal(descName,tileId,pal){
+  // Expand the current bg_lut to a 256-entry table, apply the change, then
+  // re-emit a normalized lut: majority value as default + non-overlapping
+  // sorted runs (stable for the generator, readable in the Palettes tab).
+  const d=COLORS.descriptors[descName];if(!d)return;
+  const lut=d.bg_lut||(d.bg_lut={default:0,ranges:[]});
+  const eff=new Array(256).fill(lut.default||0);
+  for(const[f,l,p]of lut.ranges||[])for(let i=f;i<=l&&i<256;i++)eff[i]=p;
+  eff[tileId&255]=pal;
+  const cnt={};for(const v of eff)cnt[v]=(cnt[v]||0)+1;
+  const def=+Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0][0];
+  const ranges=[];let start=-1,cur=null;
+  for(let i=0;i<256;i++){
+    if(eff[i]!==def){
+      if(start>=0&&eff[i]===cur)continue;
+      if(start>=0)ranges.push([start,i-1,cur]);
+      start=i;cur=eff[i];
+    }else if(start>=0){ranges.push([start,i-1,cur]);start=-1;cur=null;}
+  }
+  if(start>=0)ranges.push([start,255,cur]);
+  lut.default=def;lut.ranges=ranges;
+}
+function renderPalStrip(){
+  const host=$('#palSwatches'),info=$('#palStripInfo');
+  const id=selectedBgId();
+  if(id===null){
+    host.innerHTML='';
+    info.textContent=curTile===null?'(select a tile)'
+      :'OBJ-only tile — sprite palette via the Palettes tab (OBJ ranges)';
+    return;
+  }
+  const desc=activeDescName();
+  const lut=COLORS.descriptors[desc]?.bg_lut||{default:0,ranges:[]};
+  const curPal=lutAttr(lut,id)&7;
+  const pals=palColors(desc,'bg_palettes');
+  host.innerHTML='';
+  for(let i=0;i<8;i++){
+    const sw=document.createElement('span');
+    sw.className='swatch'+(i===curPal?' current':'');
+    sw.innerHTML=`<span class="strip">${pals[i].map(c=>`<i style="background:${c}"></i>`).join('')}</span><small>${i}</small>`;
+    sw.title=`Assign palette ${i} to tile $${id.toString(16).padStart(2,'0')} (descriptor ${desc})`;
+    sw.onclick=()=>{
+      setTilePal(desc,id,i);
+      renderActive();
+      toast(`Tile $${id.toString(16).padStart(2,'0')} → palette ${i} (${desc})`);
+    };
+    host.appendChild(sw);
+  }
+  info.textContent=`tile $${id.toString(16).padStart(2,'0')} · descriptor ${desc}`;
+}
+function endPick(){
+  pickTarget=null;
+  const b=$('#replaceTile');b.textContent='⎘ Replace with…';b.classList.remove('active');
+  $('#sheet').style.cursor='';
+}
+function pickStatus(){
+  return pickTarget.mode==='cell'
+    ?`Replace mode: click the source tile (Esc to cancel) — remaps cell (${pickTarget.cx},${pickTarget.cy}) of ${pickTarget.screen}`
+    :`Replace mode: click the source tile (Esc to cancel) — target CHR ${pickTarget.chr} #${pickTarget.tile}`;
+}
+function applyCellPick(srcChr,srcTile){ // remap ONE tilemap cell to the picked tile
+  const dst=pickTarget;
+  const newId=bgTileId(DATA.chr_entries[srcChr].dest+srcTile*16);
+  if(newId===null){toast('OBJ-only tile ($8000-$87FF) — a BG cell cannot point to it');return;}
+  const chk=resolveTile(dst.screen,newId); // the cell can only show what this
+  if(!chk||chk.entry!==srcChr||chk.index!==srcTile){ // screen's VRAM holds
+    toast(`Tile not loaded in VRAM on ${dst.screen}`+
+      (chk?` — BG ID $${newId.toString(16).padStart(2,'0')} shows CHR ${chk.entry} #${chk.index} there`:''));
+    return;
+  }
+  const mk=String(dst.map),key=dst.cy+','+dst.cx;
+  EDITS.remaps[mk]=EDITS.remaps[mk]||{};
+  EDITS.remaps[mk][key]=newId;
+  endPick();
+  curScreen=dst.screen;$('#scrSel').value=curScreen;
+  curCell={cx:dst.cx,cy:dst.cy};
+  curChr=srcChr;curTile=srcTile;lastCellId=newId;$('#chrSel').value=curChr;
+  setPixMode('screen');
+  toast(`Cell (${dst.cx},${dst.cy}) → tile $${newId.toString(16).padStart(2,'0')} (only this cell)`);
+}
+function applyPick(srcChr,srcTile){
+  const dst=pickTarget;
+  const lv=tileLevels(chrBytesFor(srcChr),srcTile);
+  const base=tileLevels(b64(DATA.chr_entries[dst.chr].data_b64),dst.tile);
+  if(lv.every((v,i)=>v===base[i])){ // identical to the original -> no patch
+    if(EDITS.patches[dst.chr]){delete EDITS.patches[dst.chr][dst.tile];
+      if(!Object.keys(EDITS.patches[dst.chr]).length)delete EDITS.patches[dst.chr];}
+  }else{
+    EDITS.patches[dst.chr]=EDITS.patches[dst.chr]||{};
+    EDITS.patches[dst.chr][dst.tile]=lv;
+  }
+  endPick();
+  curChr=dst.chr;curTile=dst.tile;lastCellId=null;curCell=null;$('#chrSel').value=curChr;
+  invalidateChr();renderActive();
+  toast(`Tile #${dst.tile} replaced with CHR ${srcChr} #${srcTile}`);
+}
+function setPixMode(mode){
+  pixMode=mode;
+  $('#modeScreen').classList.toggle('active',mode==='screen');
+  $('#modeSheet').classList.toggle('active',mode==='sheet');
+  $('#screenTools').style.display=mode==='screen'?'':'none';
+  $('#sheetTools').style.display=mode==='sheet'?'':'none';
+  renderActive();
+}
+function renderScreenView(){
+  if(!curScreen)return;
+  const sc=DATA.screens[curScreen],Z=3,cv=$('#sheet');
+  cv.width=20*8*Z;cv.height=18*8*Z;
+  const ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+  const desc=sc.descriptor,bgp=palColors(desc,'bg_palettes');
+  const lut=COLORS.descriptors[desc]?.bg_lut||{default:0,ranges:[]};
+  const remaps=remapsFor(sc);
+  for(let cy=0;cy<18;cy++)for(let cx=0;cx<20;cx++){
+    const id=effTileId(sc,cx,cy),ox=cx*8*Z,oy=cy*8*Z;
+    const res=resolveTile(curScreen,id);
+    if(!res){ // not covered by a captured tileset -> hatched
+      ctx.fillStyle='#2a2d38';ctx.fillRect(ox,oy,8*Z,8*Z);
+      ctx.strokeStyle='#444a5a';ctx.beginPath();
+      ctx.moveTo(ox,oy+8*Z);ctx.lineTo(ox+8*Z,oy);ctx.stroke();continue;
+    }
+    const lv=tileLevels(chrBytesFor(res.entry),res.index);
+    const pal=bgp[lutAttr(lut,id)&7]||bgp[0];
+    for(let i=0;i<64;i++){ctx.fillStyle=pal[lv[i]];ctx.fillRect(ox+(i%8)*Z,oy+Math.floor(i/8)*Z,Z,Z);}
+  }
+  // sprite overlay (real OAM positions, OBJ palettes, flips, level 0 transparent)
+  if($('#showSprites').checked){
+    const objp=palColors(desc,'obj_palettes');
+    const olut=COLORS.descriptors[desc]?.obj_lut||{default:0,ranges:[]};
+    for(const sp of sc.oam){
+      const res=resolveAddr(curScreen,0x8000+sp.tile*16);if(!res)continue;
+      const lv=tileLevels(chrBytesFor(res.entry),res.index);
+      let pi=lutAttr(olut,sp.tile)&3;if(sp.flags&0x10)pi+=4;
+      const pal=objp[pi]||objp[0];
+      const sx=(sp.x-8)*Z,sy=(sp.y-16)*Z;
+      for(let i=0;i<64;i++){const v=lv[i];if(!v)continue;
+        let px=i%8,py=Math.floor(i/8);
+        if(sp.flags&0x20)px=7-px;
+        if(sp.flags&0x40)py=7-py;
+        ctx.fillStyle=pal[v];ctx.fillRect(sx+px*Z,sy+py*Z,Z,Z);}
+    }
+  }
+  // outlines: red = edited pixels, orange = remapped cell, blue = selected cell
+  for(let cy=0;cy<18;cy++)for(let cx=0;cx<20;cx++){
+    const res=resolveTile(curScreen,effTileId(sc,cx,cy));
+    const edited=res&&!!(EDITS.patches[res.entry]||{})[res.index];
+    const remapped=remaps[cy+','+cx]!==undefined;
+    const sel=curCell&&curCell.cx===cx&&curCell.cy===cy;
+    if(edited||sel||remapped){
+      ctx.strokeStyle=sel?'#5b9dd9':remapped?'#e0a030':'#e05050';ctx.lineWidth=2;
+      ctx.strokeRect(cx*8*Z+1,cy*8*Z+1,8*Z-2,8*Z-2);}
+  }
+  $('#chrInfo').textContent=pickTarget
+    ?pickStatus()
+    :`screen ${curScreen} · descriptor ${desc} — click a cell to edit its tile`;
+}
+function openScreenInPixels(name){
+  if(name!==curScreen){curTile=null;lastCellId=null;curCell=null;}
+  curScreen=name;
+  const sel=$('#scrSel');if(sel)sel.value=name;
+  document.querySelector('nav button[data-tab="pixels"]').click();
+  setPixMode('screen');
+}
+function renderSheet(){
+  if(curChr===null)return;
+  const e=DATA.chr_entries[curChr];
+  const n=Math.floor(e.length/16),perRow=16,rows=Math.ceil(n/perRow),Z=3;
+  const cv=$('#sheet');cv.width=perRow*9*Z;cv.height=rows*9*Z;
+  const ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=false;
+  ctx.fillStyle='#14161d';ctx.fillRect(0,0,cv.width,cv.height);
+  const bytes=chrBytes(),pal=previewPal();
+  for(let t=0;t<n;t++){
+    const lv=tileLevels(bytes,t),ox=(t%perRow)*9*Z,oy=Math.floor(t/perRow)*9*Z;
+    for(let i=0;i<64;i++){ctx.fillStyle=pal[lv[i]];ctx.fillRect(ox+(i%8)*Z,oy+Math.floor(i/8)*Z,Z,Z);}
+    if((EDITS.patches[curChr]||{})[t]){ctx.strokeStyle='#e05050';ctx.lineWidth=2;ctx.strokeRect(ox-1,oy-1,8*Z+2,8*Z+2);}
+    if(t===curTile){ctx.strokeStyle='#5b9dd9';ctx.lineWidth=2;ctx.strokeRect(ox-1,oy-1,8*Z+2,8*Z+2);}
+  }
+  const ids=[];const id0=bgTileId(e.dest);
+  $('#chrInfo').textContent=`dest $${e.dest.toString(16).toUpperCase()} · ${n} tiles`+
+    (id0!==null?` · BG IDs $${id0.toString(16).padStart(2,'0')}–$${bgTileId(e.dest+(n-1)*16).toString(16).padStart(2,'0')}`:'')+
+    ` · screens: ${e.screens.join(', ')||'?'}`;
+  if(pickTarget)$('#chrInfo').textContent=pickStatus();
+}
+function renderEdit(){
+  const cv=$('#edit'),ctx=cv.getContext('2d'),Z=24;
+  ctx.fillStyle='#14161d';ctx.fillRect(0,0,192,192);
+  if(curTile===null){$('#editInfo').textContent='—';return;}
+  const lv=tileLevels(chrBytes(),curTile),pal=editPal();
+  for(let i=0;i<64;i++){ctx.fillStyle=pal[lv[i]];ctx.fillRect((i%8)*Z,Math.floor(i/8)*Z,Z,Z);}
+  ctx.strokeStyle='rgba(120,120,140,.4)';
+  for(let i=1;i<8;i++){ctx.beginPath();ctx.moveTo(i*Z,0);ctx.lineTo(i*Z,192);ctx.moveTo(0,i*Z);ctx.lineTo(192,i*Z);ctx.stroke();}
+  const e=DATA.chr_entries[curChr],addr=e.dest+curTile*16,id=bgTileId(addr);
+  $('#editInfo').textContent=`tile #${curTile} @ $${addr.toString(16).toUpperCase()}`+(id!==null?` (BG ID $${id.toString(16).padStart(2,'0')})`:'');
+}
+function clickPixel(ev,dir){
+  if(curTile===null)return;
+  const r=$('#edit').getBoundingClientRect();
+  const x=Math.min(7,Math.max(0,Math.floor((ev.clientX-r.left)/24)));
+  const y=Math.min(7,Math.max(0,Math.floor((ev.clientY-r.top)/24)));
+  EDITS.patches[curChr]=EDITS.patches[curChr]||{};
+  let lv=EDITS.patches[curChr][curTile];
+  if(!lv){lv=tileLevels(b64(DATA.chr_entries[curChr].data_b64),curTile);EDITS.patches[curChr][curTile]=lv;}
+  lv[y*8+x]=(lv[y*8+x]+dir+4)%4;
+  invalidateChr();renderActive();
+}
+
+function setupPixelTab(){
+  const sel=$('#chrSel');sel.innerHTML='';
+  for(const[id,e]of Object.entries(DATA.chr_entries)){
+    const o=document.createElement('option');o.value=id;
+    o.textContent=`CHR ${id} — ${e.screens.slice(0,3).join(', ')||'?'} (${Math.floor(e.length/16)} tiles)`;
+    sel.appendChild(o);
+  }
+  sel.onchange=()=>{curChr=sel.value;curTile=null;lastCellId=null;curCell=null;renderActive();};
+  curChr=sel.value;
+  const ss=$('#scrSel');ss.innerHTML='';
+  for(const n of Object.keys(DATA.screens)){
+    const o=document.createElement('option');o.value=n;o.textContent=n;ss.appendChild(o);
+  }
+  ss.onchange=()=>{curScreen=ss.value;curTile=null;lastCellId=null;curCell=null;renderActive();};
+  curScreen=curScreen||ss.value;
+  $('#modeScreen').onclick=()=>setPixMode('screen');
+  $('#modeSheet').onclick=()=>setPixMode('sheet');
+  $('#showSprites').onchange=()=>renderActive();
+  const pd=$('#prevDesc');pd.innerHTML='';
+  for(const d of COLORS.descriptor_order){const o=document.createElement('option');o.value=d;o.textContent=d;pd.appendChild(o);}
+  const pp=$('#prevPal');pp.innerHTML='';
+  for(let i=0;i<8;i++){const o=document.createElement('option');o.value=i;o.textContent=i;pp.appendChild(o);}
+  pd.onchange=pp.onchange=()=>renderActive();
+  $('#sheet').onclick=ev=>{
+    const r=$('#sheet').getBoundingClientRect(),Z=3;
+    if(pixMode==='screen'){
+      const cx=Math.floor((ev.clientX-r.left)/(8*Z)),cy=Math.floor((ev.clientY-r.top)/(8*Z));
+      if(cx<0||cx>19||cy<0||cy>17)return;
+      const id=effTileId(DATA.screens[curScreen],cx,cy);
+      const res=resolveTile(curScreen,id);
+      if(!res){toast('Tile not covered by a captured tileset');return;}
+      if(pickTarget){ // picking the source from a cell works for both modes
+        if(pickTarget.mode==='cell')applyCellPick(res.entry,res.index);
+        else applyPick(res.entry,res.index);
+        return;
+      }
+      curChr=res.entry;curTile=res.index;lastCellId=id;curCell={cx,cy};
+      $('#chrSel').value=curChr;
+      renderActive();
+      return;
+    }
+    const t=Math.floor((ev.clientY-r.top)/(9*Z))*16+Math.floor((ev.clientX-r.left)/(9*Z));
+    if(t<Math.floor(DATA.chr_entries[curChr].length/16)){
+      if(pickTarget){
+        if(pickTarget.mode==='cell')applyCellPick(curChr,t);
+        else applyPick(curChr,t);
+        return;
+      }
+      curTile=t;lastCellId=null;curCell=null;renderActive();
+    }
+  };
+  $('#sheet').onmousemove=ev=>{
+    if(pixMode!=='screen'||!curScreen)return;
+    const r=$('#sheet').getBoundingClientRect(),Z=3;
+    const cx=Math.min(19,Math.max(0,Math.floor((ev.clientX-r.left)/(8*Z))));
+    const cy=Math.min(17,Math.max(0,Math.floor((ev.clientY-r.top)/(8*Z))));
+    const sc=DATA.screens[curScreen],orig=sc.bg_tiles[cy][cx],id=effTileId(sc,cx,cy);
+    const res=resolveTile(curScreen,id);
+    const lut=COLORS.descriptors[sc.descriptor]?.bg_lut||{default:0,ranges:[]};
+    $('#chrInfo').textContent=`screen ${curScreen} · cell (${cx},${cy}) · tile $${id.toString(16).padStart(2,'0')}`+
+      (id!==orig?` (remap of $${orig.toString(16).padStart(2,'0')})`:'')+
+      ` · palette ${lutAttr(lut,id)}`+(res?` · CHR ${res.entry} #${res.index}`:' · not covered');
+  };
+  $('#edit').onclick=ev=>clickPixel(ev,+1);
+  $('#edit').oncontextmenu=ev=>{ev.preventDefault();clickPixel(ev,-1);};
+  $('#resetTile').onclick=()=>{
+    if(pixMode==='screen'&&curCell){ // a remapped cell resets to its original tile
+      const sc=DATA.screens[curScreen],mk=String(sc.map_id),key=curCell.cy+','+curCell.cx;
+      if(EDITS.remaps[mk]&&EDITS.remaps[mk][key]!==undefined){
+        delete EDITS.remaps[mk][key];
+        if(!Object.keys(EDITS.remaps[mk]).length)delete EDITS.remaps[mk];
+        renderActive();toast(`Cell (${curCell.cx},${curCell.cy}) remap removed`);
+        return;
+      }
+    }
+    if(curTile===null)return;
+    if(EDITS.patches[curChr]){delete EDITS.patches[curChr][curTile];
+      if(!Object.keys(EDITS.patches[curChr]).length)delete EDITS.patches[curChr];}
+    invalidateChr();renderActive();
+  };
+  $('#replaceTile').onclick=()=>{
+    if(pickTarget){endPick();renderActive();return;}
+    if(curTile===null)return toast('Select a tile to replace first');
+    if(pixMode==='screen'){ // screen view: remap just the selected cell
+      if(!curCell)return toast('Select a cell first');
+      const sc=DATA.screens[curScreen];
+      if(sc.map_id==null)return toast('Screen without a map id — cell remap impossible');
+      pickTarget={mode:'cell',screen:curScreen,map:sc.map_id,cx:curCell.cx,cy:curCell.cy};
+    }else{ // sheet view: overwrite the tile's pixels (all its uses)
+      pickTarget={mode:'pixels',chr:curChr,tile:curTile};
+    }
+    const b=$('#replaceTile');b.textContent='✕ Cancel';b.classList.add('active');
+    $('#sheet').style.cursor='copy';
+    if(pixMode!=='sheet')setPixMode('sheet');else renderActive();
+    toast(pickTarget.mode==='cell'
+      ?'Click the source tile — only tiles loaded on this screen are valid'
+      :'Click the source tile in the sheet');
+  };
+  document.onkeydown=ev=>{ // setupPixelTab runs again after every rebuild: plain assignment, not addEventListener
+    if(ev.key==='Escape'&&pickTarget){endPick();renderActive();}
+  };
+  setPixMode(pixMode);
+}
+
+/* ---------- save / rebuild ---------- */
+async function post(url,body){
+  const r=await fetch(url,{method:'POST',body:JSON.stringify(body)});
+  const t=await r.text();if(!r.ok)throw new Error(t);return t;
+}
+$('#saveBtn').onclick=async()=>{
+  try{await post('/save-colors',COLORS);await post('/save-tiles',EDITS);toast('Saved ✔');}
+  catch(e){toast('Error: '+e.message);}
+};
+$('#rebuildBtn').onclick=async()=>{
+  const b=$('#rebuildBtn');b.disabled=true;b.textContent='⏳ Building…';
+  $('#log').classList.remove('hidden');$('#log').textContent='Saving + rebuild + recapture (1-2 min)…';
+  try{
+    await post('/save-colors',COLORS);await post('/save-tiles',EDITS);
+    $('#log').textContent=await post('/rebuild',{});
+    await load();toast('Rebuild OK ✔');
+  }catch(e){$('#log').textContent='FAILED:\n'+e.message;toast('Rebuild failed');}
+  b.disabled=false;b.textContent='🔨 Rebuild + captures';
+};
+
+/* ---------- init ---------- */
+async function load(){
+  [DATA,COLORS,EDITS]=await Promise.all([
+    fetch('data.json?'+Date.now()).then(r=>r.json()),
+    fetch('/screen_colors.json?'+Date.now()).then(r=>r.json()),
+    fetch('/tile_edits.json?'+Date.now()).then(r=>r.json()),
+  ]);
+  EDITS.patches=EDITS.patches||{};
+  EDITS.remaps=EDITS.remaps||{};
+  invalidateChr();
+  const ds=$('#descSel');ds.innerHTML='';
+  for(const d of COLORS.descriptor_order){const o=document.createElement('option');o.value=d;o.textContent=d;ds.appendChild(o);}
+  ds.onchange=()=>{curDesc=ds.value;renderPalForm();};
+  curDesc=COLORS.descriptor_order[0];
+  renderScreens();renderPalForm();setupPixelTab();
+}
+load();
+</script>
+</body>
+</html>

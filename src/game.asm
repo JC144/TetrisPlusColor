@@ -45,3 +45,6 @@ INCLUDE "graphics/bank0f_font_tiles.asm"
 
 ; GBC colorization extensions
 INCLUDE "extensions/bank10_gbc_colorization.asm"
+
+; Sprite graphics table relocated from bank $0a (generated, see tools/gen_sprite_gfx.py)
+INCLUDE "graphics/bank11_sprite_gfx.asm"
