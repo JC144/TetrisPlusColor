@@ -281,4 +281,32 @@ GBC_ContinuePreviewErase::
     ld c, $04
     jp QueueTextDraw
 
+; ============================================================================
+; GBC_LevelSelectB: classic SELECT LEVEL (GAME_STATE $03 ss$01, ROM0 handler
+; at $0668, bank01 mapped). Replaces its "ldh a,[$ff8d] / and $01" A check
+; (iso-size, "call GBC_LevelSelectB / ret z / nop"). B = back to SELECT MODE:
+; arm the fade-out, fade the music and hand over to GAME_STATE $02 ss$0c
+; (GBC_SelectModeReturn in bank05, which waits for the fade-out and reloads
+; map $21 with the CLASSIC vignette since $c5a8 is still 0). Returns Z on B
+; (caller returns), else the original A test result.
+; ============================================================================
+GBC_LevelSelectB::
+    ldh a, [$ff8d]
+    and $02
+    jr z, .orig
+    ld a, $08
+    call InitPaletteFade
+    ld a, $02
+    ld [SOUND_CONTROL], a
+    ld a, $02
+    ld [GAME_STATE], a
+    ld a, $0c
+    ld [SCREEN_SUBSTATE], a
+    xor a
+    ret
+.orig:
+    ldh a, [$ff8d]
+    and $01
+    ret
+
     ds $8000 - @, 0

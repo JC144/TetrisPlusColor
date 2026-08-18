@@ -17,5 +17,7 @@
   "05:5d32": "puzzle NEW GAME/CONTINUE menu: cursor row swap $0a -> $0c (Call_005_5d31)",
   "05:5d3b": "puzzle NEW GAME/CONTINUE menu: cursor row swap $0c -> $0a (Call_005_5d31)",
   "05:6896": "CONTINUE screen (bank05 second handler): accept A as well as Start to continue (and $08 -> and $09)",
-  "05:68a8": "CONTINUE screen (bank05 second handler): counter decrement moved from A to B (and $01 -> and $02)"
+  "05:68a8": "CONTINUE screen (bank05 second handler): counter decrement moved from A to B (and $01 -> and $02)",
+  "05:42ba": "puzzle menus (GAME_STATE $05) substate table relocated to GBC_PuzzleMenuTable ($42c9 -> bank05 menu-back island) to add the B=back substates ss$19/ss$1a",
+  "05:5584": "SELECT MODE (GAME_STATE $02) substate table relocated to GBC_SelectModeTable ($5593 -> bank05 menu-back island) to add the B=back substates ss$0c/ss$0d"
 }

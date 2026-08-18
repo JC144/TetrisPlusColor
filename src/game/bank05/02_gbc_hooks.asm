@@ -1,5 +1,5 @@
 ; ============================================================================
-; bank05/01_gbc_hooks.asm — $7f9c-$8000: GBC hook island (NavQueueAndPump, puzzle menu, continue-preview)
+; bank05/02_gbc_hooks.asm — $7f9c-$8000: GBC hook island (NavQueueAndPump, puzzle menu, continue-preview)
 ; Part of SECTION "ROM Bank $005"; included in order by bank05_screens.asm.
 ; ============================================================================
 ; ============================================================================

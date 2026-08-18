@@ -29,10 +29,11 @@ The big part was done, the game still needed some little fixes to be nice to pla
 * Fixing that "LICENSED TO N*TENDO" taking up a third of the start screen
 * Switching Continue to New Game to avoid misclicks for player in an hurry
 * Fixing the end game where the background elements were falling appart
+* Adding a way to go back in the menus with the B button (and B no longer erases the save on the NEW GAME confirmation)
 
 I'm proud of the result and I enjoyed it a lot!
 
 ## Contribution
 If you want to contribute and modify some levels, there are already some tools available in the ./tools folder.
 
-Feel free to open a PR. Sadly, I've always struggle to draw things and I'm not good with colors.
+Feel free to open a PR. Sadly, I've always struggled to draw things and I'm not good with colors.

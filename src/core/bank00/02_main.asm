@@ -953,9 +953,9 @@ jr_000_069c:
 Jump_000_069f:
 jr_000_069f:
     call Call_000_06de
-    ldh a, [$ff8d]
-    and $01
+    call GBC_LevelSelectB       ; was: ldh a,[$ff8d] / and $01 (B = back to SELECT MODE, iso-size)
     ret z
+    nop
 
     call $781d
     ld a, $04

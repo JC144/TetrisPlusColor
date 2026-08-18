@@ -462,7 +462,7 @@ jr_005_428e:
 
 
     ld a, [SCREEN_SUBSTATE]
-    ld hl, $42c9
+    ld hl, GBC_PuzzleMenuTable  ; was: ld hl, $42c9 (table relocated + extended, 01_gbc_menu_back.asm)
     ld d, $00
     ld e, a
 
@@ -562,9 +562,9 @@ jr_005_4304:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
-    and $01
+    call GBC_MenuToSelectMode   ; was: ldh a,[$ff8d] / and $01 (B = back to SELECT MODE, iso-size)
     jr z, jr_005_4357
+    nop
 
     ld a, [$a459]
     cp $ff
@@ -751,9 +751,9 @@ Jump_005_4470:
     ret
 
 
-    ldh a, [$ff8d]
-    and $02
+    call GBC_ConfirmB           ; was: ldh a,[$ff8d] / and $02 (B forces NO instead of accepting, iso-size)
     jr nz, jr_005_4488
+    nop
 
     ldh a, [$ff8d]
     and $01
@@ -1105,9 +1105,9 @@ jr_005_46b0:
 
 jr_005_46d5:
     call Call_005_4763
-    ldh a, [$ff8d]
-    and $01
+    call GBC_WorldMapB          ; was: ldh a,[$ff8d] / and $01 (B = back to difficulty select, iso-size)
     jr z, jr_005_46eb
+    nop
 
     ld a, $08
     call Call_000_0162
@@ -1413,9 +1413,9 @@ jr_005_488e:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
-    and $01
+    call GBC_DifficultyB        ; was: ldh a,[$ff8d] / and $01 (B = back to NEW GAME/CONTINUE, iso-size)
     jr z, jr_005_48b7
+    nop
 
     ld a, $08
     call Call_000_0162
@@ -1553,9 +1553,9 @@ jr_005_4955:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
-    and $01
+    call GBC_MenuToSelectMode   ; was: ldh a,[$ff8d] / and $01 (B = back to SELECT MODE, iso-size)
     jr z, jr_005_4995
+    nop
 
     ld a, $08
     call Call_000_0162
@@ -1739,9 +1739,9 @@ jr_005_4a4f:
     ld a, $90
     ld [$c68c], a
     call Call_005_5da7
-    ldh a, [$ff8d]
-    and $01
+    call GBC_EditGridB          ; was: ldh a,[$ff8d] / and $01 (B = back to EDIT menu, iso-size)
     jr z, jr_005_4b3b
+    nop
 
     ld a, $04
     ldh [$ffa1], a
@@ -3579,7 +3579,7 @@ jr_005_557e:
 
 
     ld a, [SCREEN_SUBSTATE]
-    ld hl, $5593
+    ld hl, GBC_SelectModeTable  ; was: ld hl, $5593 (table relocated + extended, 01_gbc_menu_back.asm)
     ld d, $00
     ld e, a
     sla e
@@ -3676,9 +3676,9 @@ Jump_005_55b5:
 
 
 jr_005_5617:
-    ldh a, [$ff8d]
-    and $09
+    call GBC_SelectModeB        ; was: ldh a,[$ff8d] / and $09 (B = back to TITLE, iso-size)
     jp nz, Jump_005_568d
+    nop
 
     ldh a, [$ff8d]
     and $10
@@ -3988,9 +3988,9 @@ Jump_005_57d7:
     jp Jump_000_0165
 
 
-    ldh a, [$ff8d]
-    and $01
+    call GBC_EraseConfirmB      ; was: ldh a,[$ff8d] / and $01 (B = back to OPTIONS, iso-size)
     jr z, jr_005_582f
+    nop
 
     ld a, $04
     ldh [$ffa1], a
@@ -6900,5 +6900,5 @@ jr_005_6924:
     ret
 
 
-    ds 5712, 0 ; 5712 x nop ($00)
+    ASSERT @ == $694c ; end of the original bank05 code; $694c-$7f9b was padding, now the menu-back island
 

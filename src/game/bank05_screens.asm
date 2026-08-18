@@ -18,5 +18,6 @@
 
 SECTION "ROM Bank $005", ROMX[$4000], BANK[$5]
 
-INCLUDE "game/bank05/00_screens.asm"  ; $4000-$7f9c
-INCLUDE "game/bank05/01_gbc_hooks.asm"  ; $7f9c-$8000
+INCLUDE "game/bank05/00_screens.asm"  ; $4000-$694c
+INCLUDE "game/bank05/01_gbc_menu_back.asm"  ; $694c-$7f9c (B = back navigation, then padding)
+INCLUDE "game/bank05/02_gbc_hooks.asm"  ; $7f9c-$8000
