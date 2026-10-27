@@ -780,6 +780,10 @@
     "0x45": "tryagain",
     "0x2c": "worldmap",
     "0x2f": "cutscene",
-    "0x38": "cutscene"
+    "0x38": "cutscene",
+    "0x4f": "puzzlemenu",
+    "0x29": "gameplay",
+    "0x2e": "puzzlemenu",
+    "0x2d": "gameplay"
   }
 }

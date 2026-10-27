@@ -309,4 +309,64 @@ GBC_LevelSelectB::
     and $01
     ret
 
+; ============================================================================
+; GBC_HardDrop: Up = hard drop. Replaces the "ldh a,[$ff8d] / and $80" Down
+; edge test of both falling-piece handlers (classic entity state $12 at
+; bank00 $285c, puzzle state $42 at $2d0f; bank01 mapped, DE = piece entity),
+; iso-size "call GBC_HardDrop / nop". No Up edge: returns the original Down
+; test. Up edge: slides the piece down to its landing row (classic scores one
+; point per row, like soft drop), then returns NZ so the caller's Down branch
+; (call $6e10) finds the piece blocked and locks it at once with the usual
+; sound. Erased during the slide, drawn once at the end.
+; The piece redraw (Call_001_50cb, RENDER_FLAGS bit 1, odd frames only) only
+; refreshes a 7-row window around the piece's current row, so the erased
+; cells at the start row are flushed to VRAM before moving (bypassing the
+; odd-frame gate), or they linger as a ghost.
+; ============================================================================
+GBC_HardDrop::
+    ldh a, [$ff8d]
+    and $40
+    jr nz, .drop
+    ldh a, [$ff8d]
+    and $80
+    ret
+.drop:
+    xor a
+    ld hl, $c5f6                ; score addend (BCD $c5f6-$c5f8) = rows dropped
+    ld [hl+], a
+    ld [hl+], a
+    ld [hl], a
+    call Call_001_6c54          ; a=0: blocked one row down?
+    or a
+    jr nz, .lock                ; already resting: just lock it
+    call Call_001_6bea          ; erase the piece from the board buffer
+    push de
+    call Call_001_50cb.always   ; flush the erased cells around the start row
+    pop de                      ; (clobbers DE = piece entity)
+.loop:
+    ld bc, $0020
+    call Call_001_6ce7          ; buffer pointer one row down
+    ld a, $00
+    call Call_001_6ee9          ; row coordinate + 1
+    ld hl, $c5f8
+    ld a, [hl]
+    add $01
+    daa
+    ld [hl], a
+    ld a, $00
+    call Call_001_6c54          ; blocked one row down?
+    or a
+    jr z, .loop
+    call Call_001_6ae9          ; draw at the landing row
+    ld a, [$c5a8]
+    or a
+    jr nz, .lock                ; puzzle: no drop score
+    ld a, [$c5f8]
+    or a
+    call nz, Call_001_59c1      ; classic: add the rows to the score
+.lock:
+    ld a, $80
+    or a                        ; NZ -> caller runs its Down branch (locks)
+    ret
+
     ds $8000 - @, 0

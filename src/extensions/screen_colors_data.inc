@@ -338,9 +338,9 @@ Spec_cutscene_obj:
 MapColorTable:
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
     db $FF, $FF, $FF, $FF, $FF, $06, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-    db $02, $03, $04, $04, $05, $FF, $03, $FF, $FF, $FF, $FF, $FF, $08, $FF, $FF, $09
+    db $02, $03, $04, $04, $05, $FF, $03, $FF, $FF, $04, $FF, $FF, $08, $04, $05, $09
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $09, $FF, $FF, $FF, $FF, $FF, $01, $FF
-    db $FF, $FF, $FF, $FF, $FF, $07, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+    db $FF, $FF, $FF, $FF, $FF, $07, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $05
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $05, $FF, $FF, $FF
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
     db $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF

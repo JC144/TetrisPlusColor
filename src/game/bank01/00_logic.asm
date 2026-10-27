@@ -2635,6 +2635,7 @@ Call_001_50cb:
     and $01
     ret z
 
+.always:                        ; entry past the odd-frame gate (GBC_HardDrop)
     ld hl, $c0c3
     ld a, [hl]
     ld c, a

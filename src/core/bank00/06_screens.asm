@@ -1604,8 +1604,8 @@ Jump_000_2852:
     call $6cf7
 
 Jump_000_285c:
-    ldh a, [$ff8d]
-    and $80
+    call GBC_HardDrop           ; was: ldh a,[$ff8d] / and $80 (Up = hard drop, iso-size)
+    nop
     jp z, Jump_000_2869
 
     call $6e10
@@ -2374,8 +2374,8 @@ Jump_000_2d0c:
     call $6cf7
 
 Jump_000_2d0f:
-    ldh a, [$ff8d]
-    and $80
+    call GBC_HardDrop           ; was: ldh a,[$ff8d] / and $80 (Up = hard drop, iso-size)
+    nop
     jp z, Jump_000_2d1c
 
     call $6e10

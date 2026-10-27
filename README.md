@@ -30,6 +30,7 @@ The big part was done, the game still needed some little fixes to be nice to pla
 * Switching Continue to New Game to avoid misclicks for player in an hurry
 * Fixing the end game where the background elements were falling appart
 * Adding a way to go back in the menus with the B button (and B no longer erases the save on the NEW GAME confirmation)
+* Hardfall with top button!
 
 I'm proud of the result and I enjoyed it a lot!
 
