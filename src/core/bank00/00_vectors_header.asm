@@ -135,7 +135,7 @@ Call_000_0049:
     nop
 
 TimerOverflowInterrupt::
-    jp Jump_000_21c1
+    jp LinkTimerStart           ; was: jp Jump_000_21c1 (same one-shot, guarded)
 
 
     nop
@@ -201,77 +201,124 @@ GBC_BootHardwareCheck::
     nop
     nop
 
-ASSERT @ == $0081 ; Call_000_0081 is referenced by pinned code, must not move
-Call_000_0081:
-Jump_000_0081:
-    nop
+ASSERT @ == $0081 ; start of the former nop padding $0081-$00ff
+; ----------------------------------------------------------------------------
+; The old labels in this padding are only referenced as data bytes from the
+; tile / level banks ("jp $00ff" etc. are graphics). They stay as address
+; constants so those bytes do not move; the space holds the link routines.
+; ----------------------------------------------------------------------------
+DEF Call_000_0081 EQU $0081
+DEF Jump_000_0081 EQU $0081
+DEF Jump_000_0082 EQU $0082
+DEF Call_000_0084 EQU $0084
+DEF Call_000_008d EQU $008d
+DEF Call_000_0093 EQU $0093
+DEF Jump_000_00aa EQU $00aa
+DEF Jump_000_00bc EQU $00bc
+DEF Jump_000_00c0 EQU $00c0
+DEF Jump_000_00c3 EQU $00c3
+DEF Call_000_00c8 EQU $00c8
+DEF Call_000_00cc EQU $00cc
+DEF Jump_000_00e0 EQU $00e0
+DEF Call_000_00f7 EQU $00f7
+DEF Jump_000_00fc EQU $00fc
+DEF Call_000_00ff EQU $00ff
+DEF Jump_000_00ff EQU $00ff
 
-Jump_000_0082:
-    nop
-    nop
+; ----------------------------------------------------------------------------
+; Non-blocking link. The original VS code expects every link byte to arrive
+; within the frame it was sent, as on a cable (~1 ms). Over a wireless link
+; (Shiny Relay's LINK CABLE mode: the Chromatic holds a byte until the
+; partner's console answered, one network round trip) that is not true, so
+; each place that assumed it now looks again on the next frame instead:
+;   - VS substate 1 waits while our handshake byte is still out
+;     (LinkHandshakeWait) instead of giving up after one frame;
+;   - the per-frame slave re-arm leaves the port alone while our own byte is
+;     out (LinkArmGate): a write there would stall the CPU for a round trip;
+;   - when messages wait, the next byte goes out ~3 ms after an exchange
+;     (LinkPacketEnd + LinkTimerStart) instead of at the next VBlank, so a
+;     round trip per byte no longer leaves the message rings behind;
+;   - VS drops to the title after LINK_TIMEOUT silent frames, not 15.
+; ----------------------------------------------------------------------------
 
-Call_000_0084:
-    ds 9, 0 ; 9 x nop ($00)
+; Is our master byte still out? (SC = $81 until it completes; a Wi-Fi link
+; keeps it so for a whole round trip.) Z set = yes.
+LinkMasterOut:
+    ldh a, [rSC]
+    and $81
+    cp $81
+    ret
 
-Call_000_008d:
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+; VS substate 1 (was: ld a,[$d605], "did the partner answer?"). A = LINK_UP
+; as before once the handshake byte is back; while it is still out, return
+; straight from the substate handler and look again next frame.
+LinkHandshakeWait:
+    ld a, [LINK_UP]
+    and a
+    ret nz                      ; linked
+    call LinkMasterOut
+    ld a, $00
+    ret nz                      ; answered without a partner: as before
+    pop af                      ; drop the return into the handler: stay
+    ret
 
-Call_000_0093:
-    ds 23, 0 ; 23 x nop ($00)
+; Call_000_221f, once per frame while unlinked (was: ld a,[$d605]): non-zero
+; skips its re-arm (SB = $DD, SC = $80).
+LinkArmGate:
+    call LinkMasterOut
+    ld a, $01
+    ret z                       ; our handshake byte is out: leave the port
+    ld a, [LINK_UP]
+    ret
 
-Jump_000_00aa:
-    ds 18, 0 ; 18 x nop ($00)
+; Serial IRQ, end of a packet (was: call Call_000_2271, the next message).
+; When this side clocks next and a message is waiting on either side, clock
+; it LINK_RESTART_TIMA ticks from now (timer one-shot) instead of at the next
+; VBlank. Idle links keep the original one byte per VBlank.
+LinkPacketEnd:
+    call Call_000_2271
+    ld a, [LINK_CLOCKS]
+    and a
+    ret z                       ; the partner clocks the next byte
+    ldh a, [rSB]                ; our byte for it (a message?)
+    ld hl, LINK_RX_PACKET       ; the partner's byte we just got
+    or [hl]
+    ld hl, LINK_TX_PACKET       ; our message after that
+    or [hl]
+    ret z
+    ld a, $01
+    ld [LINK_BUSY], a           ; Call_000_2105 must not start it meanwhile
+    ld a, LINK_RESTART_TIMA
+    ldh [rTIMA], a
+    ld a, $06                   ; timer on, 65536 Hz
+    ldh [rTAC], a
+    ret
 
-Jump_000_00bc:
-    nop
-    nop
-    nop
-    nop
+; Timer IRQ (was: jp Jump_000_21c1, the same one-shot "SC = $81"): stops the
+; timer, then clocks the byte LinkPacketEnd scheduled, if the link is still
+; up and still ours to clock.
+LinkTimerStart:
+    push af
+    xor a
+    ldh [rTAC], a
+    ld a, [LINK_UP]
+    and a
+    jr z, .drop
+    ld a, [LINK_CLOCKS]
+    and a
+    jr z, .drop
+    ld a, $81
+    ldh [rSC], a
+    pop af
+    reti
+.drop:
+    xor a
+    ld [LINK_BUSY], a
+    pop af
+    reti
 
-Jump_000_00c0:
-    nop
-    nop
-    nop
-
-Jump_000_00c3:
-    nop
-    nop
-    nop
-    nop
-    nop
-
-Call_000_00c8:
-    nop
-    nop
-    nop
-    nop
-
-Call_000_00cc:
-    ds 20, 0 ; 20 x nop ($00)
-
-Jump_000_00e0:
-    ds 23, 0 ; 23 x nop ($00)
-
-Call_000_00f7:
-    nop
-    nop
-    nop
-    nop
-    nop
-
-Jump_000_00fc:
-    nop
-    nop
-    nop
-
-Call_000_00ff:
-Jump_000_00ff:
-    nop
+    ASSERT @ <= $0100, "link routines overflowed the vector padding"
+    ds $0100 - @, 0
 
 ASSERT @ == $0100 ; cartridge entry point
 Boot::

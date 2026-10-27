@@ -2470,7 +2470,7 @@ Call_000_0fc7:
     jp AdvanceScreenState
 
 
-    ld a, [$d605]
+    call LinkHandshakeWait      ; was: ld a,[$d605] (VS substate 1: waits for a late answer)
     or a
     jr nz, jr_000_0fd9
 
@@ -3803,7 +3803,7 @@ IncrementAttractCounter:
     jp z, Jump_000_187e
 
     ld a, [$d607]
-    cp $0f
+    cp LINK_TIMEOUT             ; frames without a link byte ($0f originally, see labels.inc)
     jp z, Jump_000_187e
 
     inc a

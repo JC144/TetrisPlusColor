@@ -249,7 +249,7 @@ jr_000_2169:
     ld [$d603], a
     ld [$d604], a
     call Call_000_22af
-    call Call_000_2271
+    call LinkPacketEnd          ; was: call Call_000_2271 (+ next byte soon when messages wait)
     jr jr_000_21bc
 
 Jump_000_21ac:
@@ -325,7 +325,7 @@ Call_000_2216:
 
 
 Call_000_221f:
-    ld a, [$d605]
+    call LinkArmGate            ; was: ld a,[$d605] (no re-arm under our own byte in flight)
 
 Jump_000_2222:
     and a

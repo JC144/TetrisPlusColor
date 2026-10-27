@@ -94,6 +94,31 @@ DEF wChrStaging          EQU $d300
 DEF wBGAttrLUT           EQU $ce00  ; 256 bytes page-aligned: tile-ID -> BG attribute
 DEF wOBJPalLUT           EQU $cf00  ; 256 bytes page-aligned: tile-ID -> OBJ palette (0-3)
 
+; ============================================================================
+; Link cable state (original game, bank00 $2105-$2317). VS sends one byte per
+; exchange; the side that clocks a byte alternates on every byte. Messages are
+; 1 byte (+3 zero bytes) in two 64-entry rings of 4-byte slots.
+; ============================================================================
+DEF LINK_CLOCKS          EQU $d600  ; 1 = this side clocks the next byte (flips every byte)
+DEF LINK_IS_MASTER       EQU $d601  ; 1 = this side started VS (drives the menus)
+DEF LINK_BUSY            EQU $d604  ; 1 = an exchange is under way or scheduled
+DEF LINK_UP              EQU $d605  ; 1 = handshake done (VS link live)
+DEF LINK_SILENT          EQU $d607  ; frames without a byte; IncrementAttractCounter
+                                    ; drops to the title at LINK_TIMEOUT
+DEF LINK_RX_PACKET       EQU $d611  ; byte just received
+DEF LINK_TX_PACKET       EQU $d620  ; next message to send (4 bytes)
+; (GAME_MODE $c7af is in fact the byte received this frame, 0 = none.)
+
+; Frames without a link byte before VS gives up (IncrementAttractCounter).
+; The original 15 (1/4 s) is shorter than a Wi-Fi hiccup; 90 = 1.5 s, the
+; same as Shiny Relay's own give-up time for one byte.
+DEF LINK_TIMEOUT         EQU 90
+
+; Delay before this side clocks the next byte when messages are waiting
+; (one-shot timer, 65536 Hz): 192 ticks = 2.9 ms, time enough for a cable
+; partner to leave its VBlank handler and re-arm its port.
+DEF LINK_RESTART_TIMA    EQU 256 - 192
+
 ; ROM bank holding the sprite graphics table read by the animation
 ; interpreter (Call_000_1f2a / Call_000_1fa0). Originally $0a; the GBC build
 ; uses a copy in bank $11 generated from tools/gfx/sprites/*.png
