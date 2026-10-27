@@ -317,6 +317,24 @@ LinkTimerStart:
     pop af
     reti
 
+; VS round result and set winner screens (was: ldh a,[$ff8d] / and $01, "A
+; pressed?"). A continues as before. B quits VS: it sends $FF, which the
+; partner's IncrementAttractCounter already reads as "link gone", and takes the
+; same exit here (fade, link reset, title). The original loops set after set,
+; so a pulled cable was the only way out. Z set = stay on the screen.
+LinkAOrQuit:
+    ldh a, [$ff8d]
+    bit 1, a
+    jr nz, .quit
+    and $01
+    ret
+.quit:
+    ld a, $ff
+    ld [$d62d], a
+    call Jump_000_187e
+    xor a
+    ret
+
     ASSERT @ <= $0100, "link routines overflowed the vector padding"
     ds $0100 - @, 0
 

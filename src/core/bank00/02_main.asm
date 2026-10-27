@@ -3346,9 +3346,9 @@ jr_000_1509:
     cp $80
     jr z, jr_000_1597
 
-    ldh a, [$ff8d]
-    and $01
+    call LinkAOrQuit            ; was: ldh a,[$ff8d] / and $01 (VS round result: B quits)
     ret z
+    nop
 
     ld a, $80
     ld [$d62d], a
@@ -3542,9 +3542,9 @@ jr_000_16ad:
     jr nz, jr_000_16da
 
 Call_000_16d0:
-    ldh a, [$ff8d]
-    and $01
+    call LinkAOrQuit            ; was: ldh a,[$ff8d] / and $01 (VS set winner: B quits)
     ret z
+    nop
 
     ld a, $20
     ld [$d62d], a

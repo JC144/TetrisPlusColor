@@ -39,6 +39,7 @@ VS mode works over [Shiny Relay](https://shinyrelay.com)'s LINK CABLE mode, two 
 
 The original game expected every link byte to come back within the frame it was sent, as on a cable. Over Wi-Fi a byte takes a network round trip, so the player who picked VS gave up after one frame while the other console was already pulled into VS, and the game dropped to the title after 1/4 s without a byte. The link code is now non-blocking: each frame it checks whether the answer arrived and, if not, simply checks again on the next frame. It waits for a late handshake, no longer pokes the link port while its own byte is still on its way (which froze the console for a round trip), sends queued messages back to back instead of one per frame, and waits 1.5 s before treating a silent link as unplugged.
 
+
 ## Contribution
 If you want to contribute and modify some levels, there are already some tools available in the ./tools folder — see [tools/README.md](tools/README.md) for the build, the colorization studio and the graphics export/import scripts.
 
