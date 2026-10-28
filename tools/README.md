@@ -176,6 +176,13 @@ padding `$0081-$00ff`, `bank00/00_vectors_header.asm`):
   instead of at the next VBlank. 3 ms lets a cable partner leave its VBlank handler and
   re-arm first (an immediate restart made it read `$FF`, a pulled cable). Idle links keep
   one byte per VBlank.
+- **VBlank start** (`LinkVBlankStart`, tail of `Call_000_2105`): the VBlank handler runs
+  the "clock the next byte" check with interrupts on, so the serial IRQ of a byte that just
+  came back could hand the turn to the partner between the check and the `SC = $81`. Both
+  sides then clocked, neither listened, and VS dropped to the title after the timeout. On a
+  cable bytes come back right after VBlank; over Wi-Fi at any point of the frame. Now the
+  start re-checks `$d600` with interrupts off and leaves a finished byte (SC bit 7 off) to
+  its IRQ.
 - **`LINK_TIMEOUT`**: 90 silent frames (1.5 s, Shiny Relay's own give-up time) instead of
   15 before VS drops to the title.
 - **Quitting VS** (`LinkAOrQuit`, VS substates 28 "round result" and 30 "set winner", was

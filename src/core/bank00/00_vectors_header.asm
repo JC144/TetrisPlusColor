@@ -335,6 +335,26 @@ LinkAOrQuit:
     xor a
     ret
 
+; VBlank, Call_000_2105 after its checks (was: ld a,[$d604] / and a / ret nz /
+; ld a,$81 / ldh [rSC],a). The VBlank handler runs it with interrupts on, so
+; the serial IRQ of a byte that just came back could hand the turn to the
+; partner between the checks and the start: both consoles then clocked, none
+; listened, and VS dropped to the title 1.5 s later. A Wi-Fi byte comes back
+; at any point of the frame, so this happened within minutes. Now: interrupts
+; off, look again, and leave a finished byte (SC bit 7 off) to its IRQ.
+LinkVBlankStart:
+    di
+    ld a, [LINK_CLOCKS]
+    and a
+    jr z, .done
+    ldh a, [rSC]
+    add a                       ; carry = SC bit 7
+    jr nc, .done
+    ld a, $81
+    ldh [rSC], a
+.done:
+    reti                        ; ei + ret
+
     ASSERT @ <= $0100, "link routines overflowed the vector padding"
     ds $0100 - @, 0
 

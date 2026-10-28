@@ -187,6 +187,7 @@ def set_scenario(tag, model, matches, **link):
         d.press(d.a, "start", wait=60)
         d.press(d.b, "start", wait=60)
         until(d, lambda: d.a.state[0] == ST_MODE and d.b.state[0] == ST_MODE, 600)
+        shot(d, f"{tag}_again")
         d.run(40)
         pick_vs(d, d.b)
         ok = until(d, lambda: d.a.state == (ST_VS, 6) and d.b.state == (ST_VS, 6), 900)

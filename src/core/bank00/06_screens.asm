@@ -155,13 +155,8 @@ Call_000_2105:
     and a
     ret z
 
-    ld a, [$d604]
-    and a
-    ret nz
-
-    ld a, $81
-    ldh [rSC], a
-    ret
+    jp LinkVBlankStart          ; was: ld a,[$d604] / and a / ret nz / ld a,$81 / ldh [rSC],a / ret (race-free start)
+    ds 7, 0
 
 
 Jump_000_211e:
